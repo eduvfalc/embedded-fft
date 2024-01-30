@@ -11,7 +11,9 @@ class IFFT
 {
 public:
     virtual ~IFFT() = default;
-    virtual void Compute(std::vector<Complex>& signal) = 0;
+    virtual void
+    Compute(std::vector<Complex>& signal)
+        = 0;
 };
 
-#endif // H_IFFT_HPP
+#endif  // H_IFFT_HPP

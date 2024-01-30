@@ -10,8 +10,12 @@ class IFFTUtils
 {
 public:
     virtual ~IFFTUtils() = default;
-    virtual void BitReversal(std::vector<Complex>& signal) = 0;
-    virtual void ZeroPadding(std::vector<Complex>& signal) = 0;
+    virtual void
+    BitReversal(std::vector<Complex>& signal)
+        = 0;
+    virtual void
+    ZeroPadding(std::vector<Complex>& signal)
+        = 0;
 };
 
-#endif // H_IFFT_UTILS_HPP
+#endif  // H_IFFT_UTILS_HPP
