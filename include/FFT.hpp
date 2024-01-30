@@ -15,6 +15,7 @@ public:
     FFT() = delete;
     explicit FFT(std::shared_ptr<IFFTUtils> fft_utils)
       : mFFTUtils(fft_utils){};
+
     void
     Compute(std::vector<Complex>& signal) override;
 

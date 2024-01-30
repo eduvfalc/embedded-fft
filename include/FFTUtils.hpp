@@ -11,8 +11,10 @@ class FFTUtils : public IFFTUtils
 {
 public:
     FFTUtils() = default;
+
     void
     BitReversal(std::vector<Complex>& signal) override;
+
     void
     ZeroPadding(std::vector<Complex>& signal) override;
 };
