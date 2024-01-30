@@ -4,6 +4,7 @@
 #include "IFFT.hpp"
 #include "IFFTUtils.hpp"
 #include <complex>
+#include <memory>
 #include <vector>
 
 using Complex = std::complex<double>;

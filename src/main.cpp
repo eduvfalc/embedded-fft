@@ -1,62 +1,62 @@
 #include "FFT.hpp"
 #include "FFTUtils.hpp"
+#include "SignalGenerator.hpp"
 #include <algorithm>
+#include <chrono>
 #include <complex>
 #include <iostream>
 #include <memory>
 #include <vector>
-
-const double PI = 2 * std::acos(0.0);
 
 using Complex = std::complex<double>;
 
 int main()
 {
     // signal parameters
-    auto frequency = 30.;
-    auto samplingPeriod = 1 / (120 * frequency);
-    auto duration = 1;
+    std::vector<std::pair<double, double>> parameters = {{2, 30}};
 
-    // signal bins
+    // signal generator parameters
+    double t_s = 1 / (120 * parameters[0].second);
+    std::chrono::nanoseconds sampling_period =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::duration<double>(t_s));
+    std::chrono::milliseconds duration(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<double>(0.5)));
+
+    // create signal container
     std::vector<Complex> signal = {};
 
+    // create signal generator
+    std::shared_ptr<SignalGenerator> generator =
+        std::make_shared<SignalGenerator>(signal, duration, sampling_period);
+
     // generate sine function
-    for (double t = 0; t <= duration; t += samplingPeriod)
-    {
-        Complex sample = {std::sin(2 * PI * frequency * t), 0};
-        signal.emplace_back(sample);
-    }
+    generator->GenerateSine(parameters);
 
-    int signalSize = signal.size();
-
-    // print signal bins
-    /* std::cout << "signal :";
-    for(auto& bin : signal) {
-        std::cout << bin.real() << ",";
-    }*/
-
-    std::cout << std::endl;
+    // keep actual signal size (before eventual zero padding)
+    int signal_size = signal.size();
 
     // compute FFT
     std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
     std::shared_ptr<IFFT> fft = std::make_shared<FFT>(fft_utils);
     fft->Compute(signal);
 
-    // print abs() of fft bins
+    // calculate peak
     std::pair<double, double> peakData = {0, 0};
-    // std::cout << "FFT bins:" << std::endl;
-    // std::cout << std::abs(signal[0]) / signalSize << ",";
-    for (int i = 1; i <= signalSize / 2; ++i)
+    for (int i = 1; i <= signal_size / 2; ++i)
     {
-        // std::cout << 2 * std::abs(signal[i]) / signalSize << ",";
-        if ((2 * std::abs(signal[i]) / signalSize) > peakData.first)
+        if ((2 * std::abs(signal[i]) / signal_size) > peakData.first)
         {
-            peakData.first = 2 * std::abs(signal[i]) / signalSize;
-            peakData.second = i * 1 / (signalSize * samplingPeriod);
+            peakData.first = 2 * std::abs(signal[i]) / signal_size;
+            peakData.second =
+                i * 1 /
+                (signal_size *
+                 std::chrono::duration_cast<std::chrono::duration<double>>(
+                     sampling_period)
+                     .count());
         }
     }
-
-    std::cout << std::endl;
 
     std::cout << "Peak: " << peakData.first << std::endl
               << "Peak freq: " << peakData.second;
