@@ -1,7 +1,12 @@
 {
-    "editor.formatOnSave": true,
-    "[cpp]": {
-        "editor.defaultFormatter": "xaver.clang-format"
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
     },
-    "clang-format.executable": "/usr/bin/clang-format"
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+    }
 }
