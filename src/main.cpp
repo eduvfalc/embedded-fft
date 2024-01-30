@@ -3,8 +3,8 @@
 #include <complex>
 #include <iostream>
 #include <algorithm>
-#include "FFT.hpp"
 #include "FFTUtils.hpp"
+#include "FFT.hpp"
 
 const double PI = 2 * std::acos(0.0);
 
