@@ -24,6 +24,8 @@ int main() {
         Complex sample = {std::sin(2  * PI * frequency * t), 0};
         signal.emplace_back(sample);
     }
+
+    int signalSize = signal.size();
     
     // print signal bins
     /* std::cout << "signal :";
