@@ -33,18 +33,6 @@ int main() {
     
     std::cout << std::endl;
 
-    // ensure the size of the input signal is a power of 2
-    int signalSize = signal.size();
-    int nextPow2 = 1;
-    while (nextPow2 < signalSize) {
-        nextPow2 <<= 1;
-    }
-
-    // pad the signal with zeros if necessary
-    if (nextPow2 > signalSize) {
-        signal.resize(nextPow2, 0.0);
-    }
-
     // compute FFT
     std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
     std::shared_ptr<IFFT> fft = std::make_shared<FFT>(fft_utils);
