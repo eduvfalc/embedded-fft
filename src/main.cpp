@@ -3,6 +3,7 @@
 #include <complex>
 #include <iostream>
 #include <memory>
+#include <utility>
 #include <vector>
 #include "FFT.hpp"
 #include "FFTUtils.hpp"
@@ -45,10 +46,10 @@ main()
     for (int i = 1; i <= signal_size / 2; ++i) {
         auto amplitude = 2 * std::abs(signal[i]) / signal_size;
         if (amplitude > peakData.first) {
-            peakData.first = amplitude;
-            peakData.second
-                = i * 1
-                  / (signal_size * std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count());
+            peakData = {amplitude,
+                        i * 1
+                            / (signal_size
+                               * std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count())};
         }
     }
 
