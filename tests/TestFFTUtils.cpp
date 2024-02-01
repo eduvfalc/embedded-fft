@@ -7,28 +7,50 @@
 
 using Complex = std::complex<double>;
 
+// bit reversal test data
 const std::vector<Complex> k1bit{0, 1};
 const std::vector<Complex> k2bits{0, 2, 1, 3};
 const std::vector<Complex> k3bits{0, 4, 2, 6, 1, 5, 3, 7};
 const std::vector<Complex> k4bits{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
 
-class TestFFTUtils : public ::testing::TestWithParam<std::vector<Complex>>
+class TestBitReversal : public ::testing::TestWithParam<std::vector<Complex>>
 {
 protected:
     std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
 };
 
-TEST_P(TestFFTUtils, BitsAreSuccessfullyReversed)
+class TestZeroPadding : public ::testing::TestWithParam<int>
 {
-    auto                 input_vector = GetParam();
-    auto                 signal_size  = input_vector.size();
-    std::vector<Complex> test_vector  = {};
+protected:
+    std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
+};
+
+TEST_P(TestBitReversal, BitsAreSuccessfullyReversed)
+{
+    auto                 input_signal = GetParam();
+    auto                 signal_size  = input_signal.size();
+    std::vector<Complex> test_signal;
     for (int i = 0; i <= signal_size - 1; ++i)
-        test_vector.emplace_back(Complex(i, 0));
+        test_signal.emplace_back(Complex(i, 0));
 
-    fft_utils->BitReversal(test_vector);
+    fft_utils->BitReversal(test_signal);
 
-    EXPECT_EQ(test_vector, input_vector);
+    EXPECT_EQ(test_signal, input_signal);
 }
 
-INSTANTIATE_TEST_CASE_P(BitReversalTests, TestFFTUtils, ::testing::Values(k1bit, k2bits, k3bits, k4bits));
+TEST_P(TestZeroPadding, SignalsArePowersOf2)
+{
+    auto                 signal_size = GetParam();
+    std::vector<Complex> test_signal;
+    for (int i = 0; i <= signal_size; ++i)
+        test_signal.emplace_back(Complex(i, 0));
+    auto next_pow_2 = test_signal.capacity();
+
+    fft_utils->ZeroPadding(test_signal);
+
+    EXPECT_EQ(test_signal.size(), next_pow_2);
+}
+
+INSTANTIATE_TEST_CASE_P(BitReversalTests, TestBitReversal, ::testing::Values(k1bit, k2bits, k3bits, k4bits));
+
+INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2, TestZeroPadding, ::testing::Values(3, 5, 12, 100));
