@@ -14,13 +14,12 @@ using Complex = std::complex<double>;
 int
 main()
 {
-    // signal parameters
-    std::pair<double, double> parameters = {2, 30};
+    // sine parameters (amplitude, frequency)
+    std::pair<double, double> parameters = {10, 30};
 
-    // signal generator parameters
-    double                   t_s = 1 / (120 * parameters.second);
+    // signal generator parameters (mind the trade-off in between frequency/time resolution)
     std::chrono::nanoseconds sampling_period
-        = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(t_s));
+        = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(0.001));
     std::chrono::milliseconds duration(
         std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(1)));
 
@@ -32,6 +31,9 @@ main()
 
     // generate sine function
     generator->GenerateSine(signal, parameters);
+
+    // apply the Hann window
+    generator->ApplyHannWindow(signal);
 
     // keep actual signal size (before eventual zero padding)
     int signal_size = signal.size();
@@ -53,7 +55,7 @@ main()
         }
     }
 
-    std::cout << "Peak: " << peakData.first << std::endl << "Peak freq: " << peakData.second;
+    std::cout << "Peak: " << peakData.first << std::endl << "Peak freq: " << peakData.second << std::endl;
 
     return 0;
 }

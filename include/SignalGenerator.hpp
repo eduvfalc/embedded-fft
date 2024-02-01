@@ -16,7 +16,10 @@ public:
     SignalGenerator(std::chrono::nanoseconds duration, std::chrono::nanoseconds sampling_period);
 
     void
-    GenerateSine(std::vector<Complex>& signal, std::pair<double, double>& parameters);
+    GenerateSine(std::vector<Complex>& signal, const std::pair<double, double>& parameters);
+
+    void
+    ApplyHannWindow(std::vector<Complex>& signal);
 
 private:
     std::chrono::nanoseconds mDuration;
