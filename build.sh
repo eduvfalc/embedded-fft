@@ -1,4 +1,4 @@
-BUILD_DIR=$(dirname "$(realpath $0)")/build
+BUILD_DIR=$(dirname "$(realpath $0)")/build/debug
 SOURCE_DIR="$(pwd)"
 
 if [ -d "$BUILD_DIR" ]; then rm -rf $BUILD_DIR; fi
