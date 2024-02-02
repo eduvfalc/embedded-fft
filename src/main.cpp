@@ -15,16 +15,16 @@ int
 main()
 {
     // sine parameters (amplitude, frequency)
-    std::pair<double, double> parameters = {10, 30};
+    std::pair<double, double> parameters = {5, 60};
 
     // signal generator parameters (mind the trade-off in between frequency/time resolution)
     std::chrono::nanoseconds sampling_period
         = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(0.001));
     std::chrono::milliseconds duration(
-        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(1)));
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(2)));
 
     // create signal container
-    std::vector<Complex> signal = {};
+    std::vector<Complex> signal;
 
     // create signal generator
     std::shared_ptr<SignalGenerator> generator = std::make_shared<SignalGenerator>(duration, sampling_period);
@@ -35,16 +35,14 @@ main()
     // apply the Hann window
     generator->ApplyHannWindow(signal);
 
-    // keep actual signal size (before eventual zero padding)
-    int signal_size = signal.size();
-
     // compute FFT
     std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
     std::shared_ptr<IFFT>      fft       = std::make_shared<FFT>(fft_utils);
     fft->Compute(signal);
 
     // calculate peak
-    std::pair<double, double> peakData = {0, 0};
+    std::pair<double, double> peakData    = {0, 0};
+    int                       signal_size = signal.size();
     for (int i = 1; i <= signal_size / 2; ++i) {
         auto amplitude = 2 * std::abs(signal[i]) / signal_size;
         if (amplitude > peakData.first) {
