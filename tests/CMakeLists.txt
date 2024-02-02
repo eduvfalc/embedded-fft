@@ -8,6 +8,7 @@ target_compile_features(${PROJECT_NAME}_test PUBLIC cxx_std_20)
 
 set(GTEST_FILES
     TestFFTUtils.cpp
+    TestFFT.cpp
 )
 
 target_sources(${PROJECT_NAME}_test

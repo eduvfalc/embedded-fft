@@ -1,4 +1,3 @@
-#include <iostream>
 #include <memory>
 #include <numeric>
 #include "FFTUtils.hpp"
@@ -27,8 +26,8 @@ protected:
 
 TEST_P(TestBitReversal, BitsAreSuccessfullyReversed)
 {
-    auto                 input_signal = GetParam();
-    auto                 signal_size  = input_signal.size();
+    const auto           input_signal = GetParam();
+    const auto           signal_size  = input_signal.size();
     std::vector<Complex> test_signal;
     for (int i = 0; i <= signal_size - 1; ++i)
         test_signal.emplace_back(Complex(i, 0));
@@ -40,11 +39,11 @@ TEST_P(TestBitReversal, BitsAreSuccessfullyReversed)
 
 TEST_P(TestZeroPadding, SignalsArePowersOf2)
 {
-    auto                 signal_size = GetParam();
+    const auto           signal_size = GetParam();
     std::vector<Complex> test_signal;
     for (int i = 0; i <= signal_size; ++i)
         test_signal.emplace_back(Complex(i, 0));
-    auto next_pow_2 = test_signal.capacity();
+    const auto next_pow_2 = test_signal.capacity();
 
     fft_utils->ZeroPadding(test_signal);
 
