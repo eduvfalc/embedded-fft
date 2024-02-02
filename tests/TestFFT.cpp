@@ -54,14 +54,14 @@ TestFFT::CalculateError(const std::pair<double, double>& peak_data, const std::p
 
 TEST_F(TestFFT, ComputeSineWaveSpectrum)
 {
-    std::vector<Complex>            test_signal;
-    const std::pair<double, double> parameters{5, 60};
-    sig_gen->GenerateSine(test_signal, parameters);
+    std::vector<Complex>                         test_signal;
+    const std::vector<std::pair<double, double>> parameters{{5, 60}};
+    sig_gen->GenerateSines(test_signal, parameters);
     sig_gen->ApplyHannWindow(test_signal);
 
     fft->Compute(test_signal);
     const auto peak_data  = FindPeak(test_signal, kSamplingPeriod);
-    const auto peak_error = CalculateError(peak_data, parameters);
+    const auto peak_error = CalculateError(peak_data, parameters[0]);
 
     EXPECT_LE(peak_error.first, kAmplitudeTolerance);
     EXPECT_LE(peak_error.second, kFrequencyTolerance);

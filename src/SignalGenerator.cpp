@@ -10,13 +10,16 @@ SignalGenerator::SignalGenerator(std::chrono::nanoseconds duration, std::chrono:
   , mSamplingPeriod(sampling_period){};
 
 void
-SignalGenerator::GenerateSine(std::vector<Complex>& signal, const std::pair<double, double>& parameters)
+SignalGenerator::GenerateSines(std::vector<Complex>& signal, const std::vector<std::pair<double, double>>& parameters)
 {
     for (std::chrono::nanoseconds dt(0); dt <= mDuration; dt += mSamplingPeriod) {
         double signal_value = 0;
-        signal_value        = parameters.first
-                       * std::sin(2 * std::numbers::pi * parameters.second * std::chrono::duration<double>(dt).count());
-        Complex sample = {signal_value, 0};
+        for (const auto& signal_params : parameters) {
+            signal_value
+                += signal_params.first
+                   * std::sin(2 * std::numbers::pi * signal_params.second * std::chrono::duration<double>(dt).count());
+        }
+        Complex sample{signal_value, 0};
         signal.emplace_back(sample);
     }
 }
@@ -24,8 +27,8 @@ SignalGenerator::GenerateSine(std::vector<Complex>& signal, const std::pair<doub
 void
 SignalGenerator::ApplyHannWindow(std::vector<Complex>& signal)
 {
-    const Complex correction_fator = {2, 0};
-    auto          signal_size      = signal.size();
+    const Complex correction_fator{2, 0};
+    auto          signal_size = signal.size();
     for (int i = 0; i <= signal_size; ++i) {
         auto hanning_bin = 0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / signal_size);
         signal[i]        = signal[i] * hanning_bin * correction_fator;
