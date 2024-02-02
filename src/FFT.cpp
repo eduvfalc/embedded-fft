@@ -5,8 +5,6 @@
 #include <numbers>
 #include <vector>
 
-const double PI = 2 * std::acos(0.0);
-
 using Complex = std::complex<double>;
 
 void
@@ -17,7 +15,7 @@ FFT::Compute(std::vector<Complex>& signal)
 
     int n = signal.size();
     for (uint32_t len = 2; len <= n; len <<= 1) {
-        double  angle = 2 * PI / len;
+        double  angle = 2 * std::numbers::pi / len;
         Complex wlen(std::cos(angle), std::sin(angle));
 
         for (uint32_t i = 0; i < n; i += len) {
