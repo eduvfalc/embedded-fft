@@ -8,18 +8,23 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-constexpr auto kAmplitudeTolerance = 0.25;
-constexpr auto kFrequencyTolerance = 0.05;
+constexpr auto                     kAmplitudeTolerance = 0.10;
+constexpr auto                     kFrequencyTolerance = 0.05;
+constexpr std::chrono::nanoseconds kSamplingPeriod     = std::chrono::milliseconds(1);
+constexpr std::chrono::nanoseconds kDuration           = std::chrono::seconds(2);
 
 using Complex = std::complex<double>;
 
 class TestFFT : public ::testing::Test
 {
 protected:
-    std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
-    std::shared_ptr<IFFT>      fft       = std::make_shared<FFT>(fft_utils);
+    std::shared_ptr<IFFTUtils>       fft_utils = std::make_shared<FFTUtils>();
+    std::shared_ptr<IFFT>            fft       = std::make_shared<FFT>(fft_utils);
+    std::shared_ptr<SignalGenerator> sig_gen   = std::make_shared<SignalGenerator>(kDuration, kSamplingPeriod);
+
     std::pair<double, double>
     FindPeak(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period);
+
     std::pair<double, double>
     CalculateError(const std::pair<double, double>& peak_data, const std::pair<double, double>& parameters);
 };
@@ -49,17 +54,13 @@ TestFFT::CalculateError(const std::pair<double, double>& peak_data, const std::p
 
 TEST_F(TestFFT, ComputeSineWaveSpectrum)
 {
-    std::vector<Complex>             test_signal;
-    const std::pair<double, double>  parameters{5, 60};
-    const std::chrono::nanoseconds   sampling_period = std::chrono::milliseconds(1);
-    const std::chrono::nanoseconds   duration        = std::chrono::seconds(2);
-    std::shared_ptr<SignalGenerator> sig_gen
-        = std::make_shared<SignalGenerator>(std::chrono::seconds(2), std::chrono::milliseconds(1));
+    std::vector<Complex>            test_signal;
+    const std::pair<double, double> parameters{5, 60};
     sig_gen->GenerateSine(test_signal, parameters);
     sig_gen->ApplyHannWindow(test_signal);
 
     fft->Compute(test_signal);
-    const auto peak_data  = FindPeak(test_signal, sampling_period);
+    const auto peak_data  = FindPeak(test_signal, kSamplingPeriod);
     const auto peak_error = CalculateError(peak_data, parameters);
 
     EXPECT_LE(peak_error.first, kAmplitudeTolerance);
