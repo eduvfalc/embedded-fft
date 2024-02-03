@@ -19,7 +19,7 @@ constexpr std::chrono::nanoseconds kDuration       = std::chrono::seconds(2);
 constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1);
 const SignalGenerator              gGenerator      = SignalGenerator(kDuration, kSamplingPeriod);
 
-// wave functions
+// signal generator functions
 auto kSingleFrequencySine
     = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
 
