@@ -11,23 +11,6 @@
 
 using Complex = std::complex<double>;
 
-std::pair<double, double>
-ComputePeakData(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period)
-{
-    std::pair<double, double> peak_data   = {0, 0};
-    auto                      signal_size = signal.size();
-    for (int i = 1; i <= signal_size / 2; ++i) {
-        auto amplitude = 2 * std::abs(signal[i]) / signal_size;
-        if (amplitude > peak_data.first) {
-            peak_data = {amplitude,
-                         i * 1
-                             / (signal_size
-                                * std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count())};
-        }
-    }
-    return peak_data;
-}
-
 int
 main()
 {
@@ -58,7 +41,7 @@ main()
     fft->Compute(signal);
 
     // calculate peak
-    auto peak_data = ComputePeakData(signal, sampling_period);
+    auto peak_data = dsp_utils->FindPeaks(signal, sampling_period);
     std::cout << "Peak: " << peak_data.first << std::endl << "Peak freq: " << peak_data.second << std::endl;
 
     return 0;

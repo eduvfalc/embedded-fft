@@ -1,7 +1,8 @@
+#include "DSPUtils.hpp"
+#include <chrono>
 #include <cmath>
 #include <complex>
 #include <vector>
-#include "DSPUtils.hpp"
 
 using Complex = std::complex<double>;
 
@@ -36,4 +37,21 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
     if (nextPow2 > signalSize) {
         signal.resize(nextPow2, 0.0);
     }
+}
+
+std::pair<double, double>
+DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period)
+{
+    std::pair<double, double> peakData{0, 0};
+    int                       signal_size = signal.size();
+    for (int i = 1; i <= signal_size / 2; ++i) {
+        auto amplitude = 2 * std::abs(signal[i]) / signal_size;
+        if (amplitude > peakData.first) {
+            peakData = {amplitude,
+                        i * 1
+                            / (signal_size
+                               * std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count())};
+        }
+    }
+    return peakData;
 }
