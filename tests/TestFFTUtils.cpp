@@ -1,7 +1,6 @@
 #include <memory>
 #include <numeric>
 #include "FFTUtils.hpp"
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 using Complex = std::complex<double>;
@@ -24,7 +23,7 @@ protected:
     std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
 };
 
-TEST_P(TestBitReversal, BitsAreSuccessfullyReversed)
+TEST_P(TestBitReversal, BitsAreReversed)
 {
     const auto           input_signal = GetParam();
     const auto           signal_size  = input_signal.size();
