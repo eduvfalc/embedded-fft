@@ -10,7 +10,8 @@ SignalGenerator::SignalGenerator(std::chrono::nanoseconds duration, std::chrono:
   , mSamplingPeriod(sampling_period){};
 
 void
-SignalGenerator::GenerateSines(std::vector<Complex>& signal, const std::vector<std::pair<double, double>>& parameters)
+SignalGenerator::GenerateSines(std::vector<Complex>&                         signal,
+                               const std::vector<std::pair<double, double>>& parameters) const
 {
     for (std::chrono::nanoseconds dt(0); dt <= mDuration; dt += mSamplingPeriod) {
         double signal_value = 0;
@@ -25,7 +26,7 @@ SignalGenerator::GenerateSines(std::vector<Complex>& signal, const std::vector<s
 }
 
 void
-SignalGenerator::ApplyHannWindow(std::vector<Complex>& signal)
+SignalGenerator::ApplyHannWindow(std::vector<Complex>& signal) const
 {
     const Complex correction_fator{2, 0};
     auto          signal_size = signal.size();
