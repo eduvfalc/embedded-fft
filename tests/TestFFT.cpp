@@ -5,22 +5,31 @@
 #include "FFT.hpp"
 #include "FFTUtils.hpp"
 #include "SignalGenerator.hpp"
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-constexpr auto                     kAmplitudeTolerance = 0.10;
-constexpr auto                     kFrequencyTolerance = 0.05;
-constexpr std::chrono::nanoseconds kSamplingPeriod     = std::chrono::milliseconds(1);
-constexpr std::chrono::nanoseconds kDuration           = std::chrono::seconds(2);
+using Complex          = std::complex<double>;
+using SignalParameters = std::vector<std::pair<double, double>>;
 
-using Complex = std::complex<double>;
+// error tolerances
+constexpr auto kAmplitudeTolerance = 0.10;
+constexpr auto kFrequencyTolerance = 0.05;
 
-class TestFFT : public ::testing::Test
+// signal generator
+constexpr std::chrono::nanoseconds kDuration       = std::chrono::seconds(2);
+constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1);
+const SignalGenerator              gGenerator      = SignalGenerator(kDuration, kSamplingPeriod);
+
+// wave functions
+auto kSingleFrequencySine
+    = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
+
+class TestFFT
+  : public ::testing::TestWithParam<
+        std::pair<std::function<void(std::vector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
 protected:
-    std::shared_ptr<IFFTUtils>       fft_utils = std::make_shared<FFTUtils>();
-    std::shared_ptr<IFFT>            fft       = std::make_shared<FFT>(fft_utils);
-    std::shared_ptr<SignalGenerator> sig_gen   = std::make_shared<SignalGenerator>(kDuration, kSamplingPeriod);
+    std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
+    std::shared_ptr<IFFT>      fft       = std::make_shared<FFT>(fft_utils);
 
     std::pair<double, double>
     FindPeak(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period);
@@ -32,7 +41,7 @@ protected:
 std::pair<double, double>
 TestFFT::FindPeak(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period)
 {
-    std::pair<double, double> peakData    = {0, 0};
+    std::pair<double, double> peakData{0, 0};
     int                       signal_size = signal.size();
     for (int i = 1; i <= signal_size / 2; ++i) {
         auto amplitude = 2 * std::abs(signal[i]) / signal_size;
@@ -49,20 +58,26 @@ TestFFT::FindPeak(std::vector<Complex>& signal, const std::chrono::nanoseconds& 
 std::pair<double, double>
 TestFFT::CalculateError(const std::pair<double, double>& peak_data, const std::pair<double, double>& parameters)
 {
-    return std::pair<double, double>{1 - peak_data.first / parameters.first, 1 - peak_data.second / parameters.second};
+    return std::make_pair(1 - peak_data.first / parameters.first, 1 - peak_data.second / parameters.second);
 }
 
-TEST_F(TestFFT, ComputeSineWaveSpectrum)
+TEST_P(TestFFT, ComputeSinusoidSpectra)
 {
-    std::vector<Complex>                         test_signal;
-    const std::vector<std::pair<double, double>> parameters{{5, 60}};
-    sig_gen->GenerateSines(test_signal, parameters);
-    sig_gen->ApplyHannWindow(test_signal);
+    std::vector<Complex> test_signal;
+    auto                 test_params = GetParam();
+    test_params.first(test_signal, test_params.second);
+    gGenerator.ApplyHannWindow(test_signal);
 
     fft->Compute(test_signal);
+
     const auto peak_data  = FindPeak(test_signal, kSamplingPeriod);
-    const auto peak_error = CalculateError(peak_data, parameters[0]);
+    const auto peak_error = CalculateError(peak_data, test_params.second[0]);
 
     EXPECT_LE(peak_error.first, kAmplitudeTolerance);
     EXPECT_LE(peak_error.second, kFrequencyTolerance);
 }
+
+INSTANTIATE_TEST_CASE_P(TestSpectraComputation,
+                        TestFFT,
+                        ::testing::Values(std::make_pair(kSingleFrequencySine, SignalParameters{{5, 60}}),
+                                          std::make_pair(kSingleFrequencySine, SignalParameters{{10, 100}})));
