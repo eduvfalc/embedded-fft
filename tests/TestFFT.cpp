@@ -20,8 +20,7 @@ constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1
 const SignalGenerator              gGenerator      = SignalGenerator(kDuration, kSamplingPeriod);
 
 // signal generator functions
-auto kSingleFrequencySine
-    = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
+auto kSineWaves = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
 
 class TestFFT
   : public ::testing::TestWithParam<
@@ -79,5 +78,5 @@ TEST_P(TestFFT, ComputeSinusoidSpectra)
 
 INSTANTIATE_TEST_CASE_P(TestSpectraComputation,
                         TestFFT,
-                        ::testing::Values(std::make_pair(kSingleFrequencySine, SignalParameters{{5, 60}}),
-                                          std::make_pair(kSingleFrequencySine, SignalParameters{{10, 100}})));
+                        ::testing::Values(std::make_pair(kSineWaves, SignalParameters{{5, 60}}),
+                                          std::make_pair(kSineWaves, SignalParameters{{10, 100}})));
