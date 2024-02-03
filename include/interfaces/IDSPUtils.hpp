@@ -1,15 +1,15 @@
-#ifndef H_IFFT_UTILS_HPP
-#define H_IFFT_UTILS_HPP
+#ifndef H_IDSP_UTILS_HPP
+#define H_IDSP_UTILS_HPP
 
 #include <complex>
 #include <vector>
 
 using Complex = std::complex<double>;
 
-class IFFTUtils
+class IDSPUtils
 {
 public:
-    virtual ~IFFTUtils() = default;
+    virtual ~IDSPUtils() = default;
 
     virtual void
     BitReversal(std::vector<Complex>& signal)
@@ -20,4 +20,4 @@ public:
         = 0;
 };
 
-#endif  // H_IFFT_UTILS_HPP
+#endif  // H_DSP_UTILS_HPP

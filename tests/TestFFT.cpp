@@ -2,8 +2,8 @@
 #include <functional>
 #include <memory>
 #include <numeric>
+#include "DSPUtils.hpp"
 #include "FFT.hpp"
-#include "FFTUtils.hpp"
 #include "SignalGenerator.hpp"
 #include "gtest/gtest.h"
 
@@ -28,7 +28,7 @@ class TestFFT
         std::pair<std::function<void(std::vector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
 protected:
-    std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
+    std::shared_ptr<IDSPUtils> fft_utils = std::make_shared<DSPUtils>();
     std::shared_ptr<IFFT>      fft       = std::make_shared<FFT>(fft_utils);
 
     std::pair<double, double>

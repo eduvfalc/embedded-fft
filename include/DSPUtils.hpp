@@ -1,16 +1,16 @@
-#ifndef H_FFT_UTILS_HPP
-#define H_FFT_UTILS_HPP
+#ifndef H_DSP_UTILS_HPP
+#define H_DSP_UTILS_HPP
 
 #include <complex>
 #include <vector>
-#include "IFFTUtils.hpp"
+#include "IDSPUtils.hpp"
 
 using Complex = std::complex<double>;
 
-class FFTUtils : public IFFTUtils
+class DSPUtils : public IDSPUtils
 {
 public:
-    FFTUtils() = default;
+    DSPUtils() = default;
 
     void
     BitReversal(std::vector<Complex>& signal) override;
@@ -19,4 +19,4 @@ public:
     ZeroPadding(std::vector<Complex>& signal) override;
 };
 
-#endif  // H_FFT_UTILS_HPP
+#endif  // H_DSP_UTILS_HPP

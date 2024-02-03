@@ -1,6 +1,6 @@
 #include <memory>
 #include <numeric>
-#include "FFTUtils.hpp"
+#include "DSPUtils.hpp"
 #include "gtest/gtest.h"
 
 using Complex = std::complex<double>;
@@ -14,13 +14,13 @@ const std::vector<Complex> k4bits{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11,
 class TestBitReversal : public ::testing::TestWithParam<std::vector<Complex>>
 {
 protected:
-    std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
+    std::shared_ptr<IDSPUtils> fft_utils = std::make_shared<DSPUtils>();
 };
 
 class TestZeroPadding : public ::testing::TestWithParam<int>
 {
 protected:
-    std::shared_ptr<IFFTUtils> fft_utils = std::make_shared<FFTUtils>();
+    std::shared_ptr<IDSPUtils> fft_utils = std::make_shared<DSPUtils>();
 };
 
 TEST_P(TestBitReversal, BitsAreReversed)

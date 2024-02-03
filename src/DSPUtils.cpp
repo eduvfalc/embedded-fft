@@ -1,12 +1,12 @@
-#include "FFTUtils.hpp"
 #include <cmath>
 #include <complex>
 #include <vector>
+#include "DSPUtils.hpp"
 
 using Complex = std::complex<double>;
 
 void
-FFTUtils::BitReversal(std::vector<Complex>& signal)
+DSPUtils::BitReversal(std::vector<Complex>& signal)
 {
     auto n      = signal.size();
     int  levels = log2(n);
@@ -25,7 +25,7 @@ FFTUtils::BitReversal(std::vector<Complex>& signal)
 }
 
 void
-FFTUtils::ZeroPadding(std::vector<Complex>& signal)
+DSPUtils::ZeroPadding(std::vector<Complex>& signal)
 {
     int signalSize = signal.size();
     int nextPow2   = 1;

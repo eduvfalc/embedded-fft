@@ -10,8 +10,8 @@ using Complex = std::complex<double>;
 void
 FFT::Compute(std::vector<Complex>& signal)
 {
-    mFFTUtils->ZeroPadding(signal);
-    mFFTUtils->BitReversal(signal);
+    mDSPUtils->ZeroPadding(signal);
+    mDSPUtils->BitReversal(signal);
 
     int n = signal.size();
     for (uint32_t len = 2; len <= n; len <<= 1) {
