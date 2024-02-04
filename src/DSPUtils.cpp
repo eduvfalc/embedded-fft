@@ -58,10 +58,8 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds
                 = std::find_if(peak_data.begin(), peak_data.end(), [&frequency, &tolerance](const auto& peak) {
                       return std::abs(1 - frequency / peak.second) < tolerance;
                   });
-            if (neighbor_it != peak_data.end()) {
-                if (amplitude > neighbor_it->first) {
-                    *neighbor_it = {amplitude, frequency};
-                }
+            if (neighbor_it != peak_data.end() && amplitude > neighbor_it->first) {
+                *neighbor_it = {amplitude, frequency};
             }
             else {
                 *min_it = {amplitude, frequency};
