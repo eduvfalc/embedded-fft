@@ -48,15 +48,11 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds
     const int  signal_size = signal.size();
     for (int i = 1; i <= signal_size / 2; ++i) {
         const auto amplitude = 2 * std::abs(signal[i]) / signal_size;
-        const auto frequency = i * 1 / (signal_size * t_s);
-        if (amplitude > peak_data.back().first) {
-            peak_data.emplace_back(amplitude, frequency);
-            std::sort(peak_data.begin(),
-                      peak_data.end(),
-                      [](const std::pair<double, double>& a, const std::pair<double, double>& b) {
-                          return a.first > b.first;
-                      });
-            peak_data.pop_back();
+        auto       it        = std::min_element(peak_data.begin(), peak_data.end(), [](const auto& a, const auto& b) {
+            return a.first < b.first;
+        });
+        if (it != peak_data.end() && amplitude > it->first) {
+            *it = {amplitude, i * 1 / (signal_size * t_s)};
         }
     }
     return peak_data;
