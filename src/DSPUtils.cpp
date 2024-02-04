@@ -44,15 +44,28 @@ std::vector<std::pair<double, double>>
 DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period, const int& max_peaks)
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
+    const auto                             tolerance = 0.10;
     const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
     const int  signal_size = signal.size();
     for (int i = 1; i <= signal_size / 2; ++i) {
         const auto amplitude = 2 * std::abs(signal[i]) / signal_size;
-        auto       it        = std::min_element(peak_data.begin(), peak_data.end(), [](const auto& a, const auto& b) {
+        auto       min_it    = std::min_element(peak_data.begin(), peak_data.end(), [](const auto& a, const auto& b) {
             return a.first < b.first;
         });
-        if (it != peak_data.end() && amplitude > it->first) {
-            *it = {amplitude, i * 1 / (signal_size * t_s)};
+        if (min_it != peak_data.end() && amplitude > min_it->first) {
+            const auto frequency = i * 1 / (signal_size * t_s);
+            auto       neighbor_it
+                = std::find_if(peak_data.begin(), peak_data.end(), [&frequency, &tolerance](const auto& peak) {
+                      return std::abs(1 - frequency / peak.second) < tolerance;
+                  });
+            if (neighbor_it != peak_data.end()) {
+                if (amplitude > neighbor_it->first) {
+                    *neighbor_it = {amplitude, frequency};
+                }
+            }
+            else {
+                *min_it = {amplitude, frequency};
+            }
         }
     }
     return peak_data;

@@ -35,7 +35,7 @@ protected:
                    const std::vector<std::pair<double, double>>& parameters);
 
     void
-    SortSignalParameters(std::vector<std::pair<double, double>>& signal_parameters);
+    SortPairs(std::vector<std::pair<double, double>>& signal_parameters);
 };
 
 std::vector<std::pair<double, double>>
@@ -51,9 +51,9 @@ TestFFT::CalculateError(const std::vector<std::pair<double, double>>& peak_data,
 }
 
 void
-TestFFT::SortSignalParameters(std::vector<std::pair<double, double>>& signal_parameters)
+TestFFT::SortPairs(std::vector<std::pair<double, double>>& pairs_vector)
 {
-    return std::sort(signal_parameters.begin(), signal_parameters.end(), [](const auto& a, const auto& b) {
+    return std::sort(pairs_vector.begin(), pairs_vector.end(), [](const auto& a, const auto& b) {
         return a.first > b.first;
     });
 }
@@ -68,8 +68,9 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
 
     mFFT->Compute(test_signal);
 
-    const auto peak_data = mDspUtils->FindPeaks(test_signal, kSamplingPeriod, signal_parameters.size());
-    SortSignalParameters(signal_parameters);
+    auto peak_data = mDspUtils->FindPeaks(test_signal, kSamplingPeriod, signal_parameters.size());
+    SortPairs(peak_data);
+    SortPairs(signal_parameters);
     const auto peak_errors = CalculateError(peak_data, signal_parameters);
     for (const auto& error : peak_errors) {
         EXPECT_LE(error.first, kAmplitudeTolerance);
@@ -80,4 +81,4 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
 INSTANTIATE_TEST_CASE_P(TestSpectraComputation,
                         TestFFT,
                         ::testing::Values(std::make_pair(kSineWaves, SignalParameters{{5, 60}}),
-                                          std::make_pair(kSineWaves, SignalParameters{{10, 100}})));
+                                          std::make_pair(kSineWaves, SignalParameters{{5, 60}, {10, 100}})));
