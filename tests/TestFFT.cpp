@@ -30,33 +30,51 @@ protected:
     std::shared_ptr<IDSPUtils> mDspUtils = std::make_shared<DSPUtils>();
     std::shared_ptr<IFFT>      mFFT      = std::make_shared<FFT>(mDspUtils);
 
-    std::pair<double, double>
-    FindPeak(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period);
+    std::vector<std::pair<double, double>>
+    CalculateError(const std::vector<std::pair<double, double>>& peak_data,
+                   const std::vector<std::pair<double, double>>& parameters);
 
-    std::pair<double, double>
-    CalculateError(const std::pair<double, double>& peak_data, const std::pair<double, double>& parameters);
+    void
+    SortSignalParameters(std::vector<std::pair<double, double>>& signal_parameters);
 };
 
-std::pair<double, double>
-TestFFT::CalculateError(const std::pair<double, double>& peak_data, const std::pair<double, double>& parameters)
+std::vector<std::pair<double, double>>
+TestFFT::CalculateError(const std::vector<std::pair<double, double>>& peak_data,
+                        const std::vector<std::pair<double, double>>& parameters)
 {
-    return std::make_pair(1 - peak_data.first / parameters.first, 1 - peak_data.second / parameters.second);
+    std::vector<std::pair<double, double>> error_vector;
+    for (int i = 0; i <= peak_data.size() - 1; ++i) {
+        error_vector.emplace_back(std::make_pair(std::abs(1 - peak_data[i].first / parameters[i].first),
+                                                 std::abs(1 - peak_data[i].second / parameters[i].second)));
+    }
+    return error_vector;
 }
 
-TEST_P(TestFFT, ComputeSinusoidSpectra)
+void
+TestFFT::SortSignalParameters(std::vector<std::pair<double, double>>& signal_parameters)
+{
+    return std::sort(signal_parameters.begin(), signal_parameters.end(), [](const auto& a, const auto& b) {
+        return a.first > b.first;
+    });
+}
+
+TEST_P(TestFFT, ComputeSinusoidalSpectrum)
 {
     std::vector<Complex> test_signal;
-    auto                 test_params = GetParam();
-    test_params.first(test_signal, test_params.second);
+    auto                 test_params       = GetParam();
+    auto                 signal_parameters = test_params.second;
+    test_params.first(test_signal, signal_parameters);
     gGenerator.ApplyHannWindow(test_signal);
 
     mFFT->Compute(test_signal);
 
-    const auto peak_data  = mDspUtils->FindPeaks(test_signal, kSamplingPeriod);
-    const auto peak_error = CalculateError(peak_data, test_params.second[0]);
-
-    EXPECT_LE(peak_error.first, kAmplitudeTolerance);
-    EXPECT_LE(peak_error.second, kFrequencyTolerance);
+    const auto peak_data = mDspUtils->FindPeaks(test_signal, kSamplingPeriod, signal_parameters.size());
+    SortSignalParameters(signal_parameters);
+    const auto peak_errors = CalculateError(peak_data, signal_parameters);
+    for (const auto& error : peak_errors) {
+        EXPECT_LE(error.first, kAmplitudeTolerance);
+        EXPECT_LE(error.second, kFrequencyTolerance);
+    }
 }
 
 INSTANTIATE_TEST_CASE_P(TestSpectraComputation,

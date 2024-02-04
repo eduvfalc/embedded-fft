@@ -13,8 +13,8 @@ class FFT : public IFFT
 {
 public:
     FFT() = delete;
-    explicit FFT(std::shared_ptr<IDSPUtils> fft_utils)
-      : mDSPUtils(fft_utils){};
+    explicit FFT(std::shared_ptr<IDSPUtils> dsp_utils)
+      : mDSPUtils(dsp_utils){};
 
     void
     Compute(std::vector<Complex>& signal) override;

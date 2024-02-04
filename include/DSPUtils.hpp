@@ -18,8 +18,10 @@ public:
     void
     ZeroPadding(std::vector<Complex>& signal) override;
 
-    std::pair<double, double>
-    FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period) override;
+    std::vector<std::pair<double, double>>
+    FindPeaks(std::vector<Complex>&           signal,
+              const std::chrono::nanoseconds& sampling_period,
+              const int&                      max_peaks) override;
 };
 
 #endif  // H_DSP_UTILS_HPP

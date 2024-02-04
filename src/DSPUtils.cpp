@@ -2,6 +2,7 @@
 #include <chrono>
 #include <cmath>
 #include <complex>
+#include <iostream>
 #include <vector>
 
 using Complex = std::complex<double>;
@@ -39,19 +40,24 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
     }
 }
 
-std::pair<double, double>
-DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period)
+std::vector<std::pair<double, double>>
+DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period, const int& max_peaks)
 {
-    std::pair<double, double> peakData{0, 0};
-    int                       signal_size = signal.size();
+    std::vector<std::pair<double, double>> peak_data(max_peaks);
+    const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
+    const int  signal_size = signal.size();
     for (int i = 1; i <= signal_size / 2; ++i) {
-        auto amplitude = 2 * std::abs(signal[i]) / signal_size;
-        if (amplitude > peakData.first) {
-            peakData = {amplitude,
-                        i * 1
-                            / (signal_size
-                               * std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count())};
+        const auto amplitude = 2 * std::abs(signal[i]) / signal_size;
+        const auto frequency = i * 1 / (signal_size * t_s);
+        if (amplitude > peak_data.back().first) {
+            peak_data.emplace_back(amplitude, frequency);
+            std::sort(peak_data.begin(),
+                      peak_data.end(),
+                      [](const std::pair<double, double>& a, const std::pair<double, double>& b) {
+                          return a.first > b.first;
+                      });
+            peak_data.pop_back();
         }
     }
-    return peakData;
+    return peak_data;
 }

@@ -41,8 +41,8 @@ main()
     fft->Compute(signal);
 
     // calculate peak
-    auto peak_data = dsp_utils->FindPeaks(signal, sampling_period);
-    std::cout << "Peak: " << peak_data.first << std::endl << "Peak freq: " << peak_data.second << std::endl;
+    auto peak_data = dsp_utils->FindPeaks(signal, sampling_period, parameters.size());
+    std::cout << "Peak: " << peak_data[0].first << std::endl << "Peak freq: " << peak_data[0].second << std::endl;
 
     return 0;
 }

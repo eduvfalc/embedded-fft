@@ -20,8 +20,8 @@ public:
     ZeroPadding(std::vector<Complex>& signal)
         = 0;
 
-    virtual std::pair<double, double>
-    FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period) = 0;
+    virtual std::vector<std::pair<double, double>>
+    FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period, const int& max_peaks) = 0;
 };
 
 #endif  // H_DSP_UTILS_HPP
