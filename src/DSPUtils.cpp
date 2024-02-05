@@ -2,7 +2,6 @@
 #include <chrono>
 #include <cmath>
 #include <complex>
-#include <iostream>
 #include <vector>
 
 using Complex = std::complex<double>;
@@ -67,9 +66,6 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampl
                 *min_it = {amplitude, frequency};
             }
         }
-    }
-    for (const auto& x : peak_data) {
-        std::cout << x.first << "," << x.second << std::endl;
     }
     return peak_data;
 }
