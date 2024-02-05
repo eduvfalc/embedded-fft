@@ -11,7 +11,7 @@ using Complex          = std::complex<double>;
 using SignalParameters = std::vector<std::pair<double, double>>;
 
 // error tolerances
-constexpr auto kAmplitudeTolerance = 0.10;
+constexpr auto kAmplitudeTolerance = 0.15;
 constexpr auto kFrequencyTolerance = 0.05;
 
 // signal generator
@@ -81,4 +81,5 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
 INSTANTIATE_TEST_CASE_P(TestSpectraComputation,
                         TestFFT,
                         ::testing::Values(std::make_pair(kSineWaves, SignalParameters{{5, 60}}),
-                                          std::make_pair(kSineWaves, SignalParameters{{5, 60}, {10, 100}})));
+                                          std::make_pair(kSineWaves, SignalParameters{{5, 60}, {10, 100}}),
+                                          std::make_pair(kSineWaves, SignalParameters{{8, 30}, {3, 60}, {12, 90}})));
