@@ -44,7 +44,7 @@ std::vector<std::pair<double, double>>
 DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
-    const auto                             tolerance = 0.10;
+    const auto                             tolerance = 0.05;
     const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
     const int  signal_size = signal.size();
     for (int i = 1; i <= signal_size / 2; ++i) {
@@ -58,13 +58,18 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampl
                 = std::find_if(peak_data.begin(), peak_data.end(), [&frequency, &tolerance](const auto& peak) {
                       return std::abs(1 - frequency / peak.second) < tolerance;
                   });
-            if (neighbor_it != peak_data.end() && amplitude > neighbor_it->first) {
-                *neighbor_it = {amplitude, frequency};
+            if (neighbor_it != peak_data.end()) {
+                if (amplitude > neighbor_it->first) {
+                    *neighbor_it = {amplitude, frequency};
+                }
             }
             else {
                 *min_it = {amplitude, frequency};
             }
         }
+    }
+    for (const auto& x : peak_data) {
+        std::cout << x.first << "," << x.second << std::endl;
     }
     return peak_data;
 }
