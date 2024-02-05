@@ -41,7 +41,7 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
 }
 
 std::vector<std::pair<double, double>>
-DSPUtils::FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period, const int& max_peaks)
+DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
     const auto                             tolerance = 0.10;

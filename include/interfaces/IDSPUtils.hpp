@@ -21,7 +21,7 @@ public:
         = 0;
 
     virtual std::vector<std::pair<double, double>>
-    FindPeaks(std::vector<Complex>& signal, const std::chrono::nanoseconds& sampling_period, const int& max_peaks) = 0;
+    FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks) = 0;
 };
 
 #endif  // H_DSP_UTILS_HPP
