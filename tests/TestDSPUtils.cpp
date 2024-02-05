@@ -14,13 +14,13 @@ const std::vector<Complex> k4bits{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11,
 class TestBitReversal : public ::testing::TestWithParam<std::vector<Complex>>
 {
 protected:
-    std::shared_ptr<IDSPUtils> fft_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<IDSPUtils> dsp_utils = std::make_shared<DSPUtils>();
 };
 
 class TestZeroPadding : public ::testing::TestWithParam<int>
 {
 protected:
-    std::shared_ptr<IDSPUtils> fft_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<IDSPUtils> dsp_utils = std::make_shared<DSPUtils>();
 };
 
 TEST_P(TestBitReversal, BitsAreReversed)
@@ -31,7 +31,7 @@ TEST_P(TestBitReversal, BitsAreReversed)
     for (int i = 0; i <= signal_size - 1; ++i)
         test_signal.emplace_back(Complex(i, 0));
 
-    fft_utils->BitReversal(test_signal);
+    dsp_utils->BitReversal(test_signal);
 
     EXPECT_EQ(test_signal, input_signal);
 }
@@ -44,7 +44,7 @@ TEST_P(TestZeroPadding, SignalsArePowersOf2)
         test_signal.emplace_back(Complex(i, 0));
     const auto next_pow_2 = test_signal.capacity();
 
-    fft_utils->ZeroPadding(test_signal);
+    dsp_utils->ZeroPadding(test_signal);
 
     EXPECT_EQ(test_signal.size(), next_pow_2);
 }
