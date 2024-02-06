@@ -5,6 +5,7 @@
 #include <vector>
 
 using Complex = std::complex<double>;
+
 void
 DSPUtils::BitReversal(std::vector<Complex>& signal)
 {

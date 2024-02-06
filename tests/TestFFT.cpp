@@ -6,6 +6,7 @@
 #include "FFT.hpp"
 #include "SignalGenerator.hpp"
 #include "gtest/gtest.h"
+#include "utils/TestUtils.hpp"
 
 using Complex          = std::complex<double>;
 using SignalParameters = std::vector<std::pair<double, double>>;
@@ -20,7 +21,8 @@ constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1
 const SignalGenerator              gGenerator      = SignalGenerator(kDuration, kSamplingPeriod);
 
 // signal generator functions
-auto kSineWaves = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
+auto pSineWavesGenerator
+    = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
 
 class TestFFT
   : public ::testing::TestWithParam<
@@ -29,34 +31,7 @@ class TestFFT
 protected:
     std::shared_ptr<IDSPUtils> mDspUtils = std::make_shared<DSPUtils>();
     std::shared_ptr<IFFT>      mFFT      = std::make_shared<FFT>(mDspUtils);
-
-    std::vector<std::pair<double, double>>
-    CalculateError(const std::vector<std::pair<double, double>>& peak_data,
-                   const std::vector<std::pair<double, double>>& parameters);
-
-    void
-    SortPairs(std::vector<std::pair<double, double>>& signal_parameters);
 };
-
-std::vector<std::pair<double, double>>
-TestFFT::CalculateError(const std::vector<std::pair<double, double>>& peak_data,
-                        const std::vector<std::pair<double, double>>& parameters)
-{
-    std::vector<std::pair<double, double>> error_vector;
-    for (int i = 0; i <= peak_data.size() - 1; ++i) {
-        error_vector.emplace_back(std::make_pair(std::abs(1 - peak_data[i].first / parameters[i].first),
-                                                 std::abs(1 - peak_data[i].second / parameters[i].second)));
-    }
-    return error_vector;
-}
-
-void
-TestFFT::SortPairs(std::vector<std::pair<double, double>>& pairs_vector)
-{
-    return std::sort(pairs_vector.begin(), pairs_vector.end(), [](const auto& a, const auto& b) {
-        return a.first > b.first;
-    });
-}
 
 TEST_P(TestFFT, ComputeSinusoidalSpectrum)
 {
@@ -69,9 +44,9 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
     mFFT->Compute(test_signal);
 
     auto peak_data = mDspUtils->FindPeaks(test_signal, kSamplingPeriod, signal_parameters.size());
-    SortPairs(peak_data);
-    SortPairs(signal_parameters);
-    const auto peak_errors = CalculateError(peak_data, signal_parameters);
+    test_utils::SortPairs(peak_data);
+    test_utils::SortPairs(signal_parameters);
+    const auto peak_errors = test_utils::CalculateError(peak_data, signal_parameters);
     for (const auto& error : peak_errors) {
         EXPECT_LE(error.first, kAmplitudeTolerance);
         EXPECT_LE(error.second, kFrequencyTolerance);
@@ -80,6 +55,7 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
 
 INSTANTIATE_TEST_CASE_P(TestSpectraComputation,
                         TestFFT,
-                        ::testing::Values(std::make_pair(kSineWaves, SignalParameters{{5, 60}}),
-                                          std::make_pair(kSineWaves, SignalParameters{{5, 60}, {10, 100}}),
-                                          std::make_pair(kSineWaves, SignalParameters{{8, 30}, {3, 60}, {12, 90}})));
+                        ::testing::Values(std::make_pair(pSineWavesGenerator, SignalParameters{{5, 60}}),
+                                          std::make_pair(pSineWavesGenerator, SignalParameters{{5, 60}, {10, 100}}),
+                                          std::make_pair(pSineWavesGenerator,
+                                                         SignalParameters{{8, 30}, {3, 60}, {12, 90}})));

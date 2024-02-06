@@ -1,9 +1,21 @@
 #include <memory>
 #include <numeric>
+#include <vector>
 #include "DSPUtils.hpp"
+#include "SignalGenerator.hpp"
 #include "gtest/gtest.h"
+#include "utils/TestUtils.hpp"
 
-using Complex = std::complex<double>;
+using Complex          = std::complex<double>;
+using SignalParameters = std::vector<std::pair<double, double>>;
+
+// peak detection error tolerances
+constexpr auto kAmplitudeTolerance = 0.15;
+constexpr auto kFrequencyTolerance = 0.05;
+
+// signal generator
+constexpr std::chrono::nanoseconds kDuration       = std::chrono::seconds(2);
+constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1);
 
 // bit reversal test data
 const std::vector<Complex> k1bit{0, 1};
@@ -49,6 +61,6 @@ TEST_P(TestZeroPadding, SignalsArePowersOf2)
     EXPECT_EQ(test_signal.size(), next_pow_2);
 }
 
-INSTANTIATE_TEST_CASE_P(BitReversalTests, TestBitReversal, ::testing::Values(k1bit, k2bits, k3bits, k4bits));
+INSTANTIATE_TEST_CASE_P(BitReversal, TestBitReversal, ::testing::Values(k1bit, k2bits, k3bits, k4bits));
 
 INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2, TestZeroPadding, ::testing::Values(3, 5, 12, 100));
