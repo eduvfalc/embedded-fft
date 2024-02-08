@@ -9,7 +9,7 @@ target_compile_features(${PROJECT_NAME}_test PUBLIC cxx_std_20)
 set(GTEST_FILES
     TestDSPUtils.cpp
     TestFFT.cpp
-    utils/Testutils.cpp
+    utils/TestUtils.cpp
 )
 
 target_sources(${PROJECT_NAME}_test
@@ -21,7 +21,6 @@ target_link_libraries(${PROJECT_NAME}_test
     PRIVATE
     ${PROJECT_NAME}_lib
     GTest::gtest
-    GTest::gmock
     GTest::gtest_main
 )
 
