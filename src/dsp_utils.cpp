@@ -3,8 +3,7 @@
 #include <cmath>
 #include <complex>
 #include <vector>
-
-using Complex = std::complex<double>;
+#include "fft_types.hpp"
 
 void
 DSPUtils::BitReversal(std::vector<Complex>& signal)
@@ -35,7 +34,7 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
     }
 
     if (nextPow2 > signalSize) {
-        signal.resize(nextPow2, 0.0);
+        signal.resize(nextPow2, {0, 0});
     }
 }
 
@@ -57,11 +56,11 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampl
             });
             if (neighbor_it != peak_data.end()) {
                 if (amplitude > neighbor_it->first) {
-                    *neighbor_it = {amplitude, frequency};
+                    *neighbor_it = {static_cast<double>(amplitude), frequency};
                 }
             }
             else {
-                *min_it = {amplitude, frequency};
+                *min_it = {static_cast<double>(amplitude), frequency};
             }
         }
     }

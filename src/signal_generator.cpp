@@ -2,8 +2,7 @@
 #include <math.h>
 #include <numbers>
 #include <vector>
-
-using Complex = std::complex<double>;
+#include "fft_types.hpp"
 
 SignalGenerator::SignalGenerator(std::chrono::nanoseconds duration, std::chrono::nanoseconds sampling_period)
   : mDuration(duration)
@@ -28,10 +27,10 @@ SignalGenerator::GenerateSines(std::vector<Complex>&                         sig
 void
 SignalGenerator::ApplyHannWindow(std::vector<Complex>& signal) const
 {
-    const Complex correction_fator{2, 0};
-    auto          signal_size = signal.size();
+    Complex correction_fator{2, 0};
+    auto    signal_size = signal.size();
     for (int i = 0; i <= signal_size; ++i) {
-        auto hanning_bin = 0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / signal_size);
-        signal[i]        = signal[i] * hanning_bin * correction_fator;
+        Complex hanning_bin = {0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / signal_size), 0};
+        signal[i]           = signal[i] * hanning_bin * correction_fator;
     }
 }

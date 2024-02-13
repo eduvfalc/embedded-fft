@@ -4,8 +4,7 @@
 #include <memory>
 #include <numbers>
 #include <vector>
-
-using Complex = std::complex<double>;
+#include "fft_types.hpp"
 
 void
 FFT::Compute(std::vector<Complex>& signal)

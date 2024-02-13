@@ -2,13 +2,13 @@
 #include <functional>
 #include <memory>
 #include <numeric>
-#include "SignalGenerator.hpp"
 #include "dsp_utils.hpp"
 #include "fft.hpp"
+#include "fft_types.hpp"
 #include "gtest/gtest.h"
+#include "signal_generator.hpp"
 #include "utils/testing_utils.hpp"
 
-using Complex          = std::complex<double>;
 using SignalParameters = std::vector<std::pair<double, double>>;
 
 // error tolerances

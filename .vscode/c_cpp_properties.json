@@ -3,7 +3,8 @@
         {
             "name": "ubuntu",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/usr/local/include/cnl/**"
             ],
             "defines": [
                 "_DEBUG",

@@ -5,8 +5,7 @@
 #include <memory>
 #include <vector>
 #include "dsp_utils.hpp"
-
-using Complex = std::complex<double>;
+#include "fft_types.hpp"
 
 class FFT
 {

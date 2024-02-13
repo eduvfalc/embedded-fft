@@ -5,8 +5,7 @@
 #include <complex>
 #include <utility>
 #include <vector>
-
-using Complex = std::complex<double>;
+#include "fft_types.hpp"
 
 class SignalGenerator
 {

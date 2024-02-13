@@ -7,15 +7,14 @@
 #include <vector>
 #include "dsp_utils.hpp"
 #include "fft.hpp"
+#include "fft_types.hpp"
 #include "signal_generator.hpp"
-
-using Complex = std::complex<double>;
 
 int
 main()
 {
     // sine parameters (amplitude, frequency)
-    std::vector<std::pair<double, double>> parameters{{5, 60}};
+    std::vector<std::pair<double, double>> parameters{{1, 60}};
 
     // signal generator parameters (mind the trade-off in between frequency/time resolution)
     std::chrono::nanoseconds sampling_period
@@ -43,6 +42,11 @@ main()
     // calculate peak
     auto peak_data = dsp_utils->FindPeaks(signal, sampling_period, parameters.size());
     std::cout << "Peak: " << peak_data[0].first << std::endl << "Peak freq: " << peak_data[0].second << std::endl;
+
+    for (auto const& x : signal) {
+        std::cout << std::abs(x) << ", ";
+    }
+    std::cout << std::endl;
 
     return 0;
 }
