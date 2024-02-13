@@ -2,11 +2,11 @@
 #include <functional>
 #include <memory>
 #include <numeric>
-#include "DSPUtils.hpp"
-#include "FFT.hpp"
 #include "SignalGenerator.hpp"
+#include "dsp_utils.hpp"
+#include "fft.hpp"
 #include "gtest/gtest.h"
-#include "utils/TestUtils.hpp"
+#include "utils/testing_utils.hpp"
 
 using Complex          = std::complex<double>;
 using SignalParameters = std::vector<std::pair<double, double>>;
@@ -29,8 +29,8 @@ class TestFFT
         std::pair<std::function<void(std::vector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
 protected:
-    std::shared_ptr<IDSPUtils> mDspUtils = std::make_shared<DSPUtils>();
-    std::shared_ptr<IFFT>      mFFT      = std::make_shared<FFT>(mDspUtils);
+    std::shared_ptr<DSPUtils> mDspUtils = std::make_shared<DSPUtils>();
+    std::shared_ptr<FFT>      mFFT      = std::make_shared<FFT>(mDspUtils);
 };
 
 TEST_P(TestFFT, ComputeSinusoidalSpectrum)

@@ -1,13 +1,13 @@
 #ifndef H_DSP_UTILS_HPP
 #define H_DSP_UTILS_HPP
 
+#include <chrono>
 #include <complex>
 #include <vector>
-#include "IDSPUtils.hpp"
 
 using Complex = std::complex<double>;
 
-class DSPUtils : public IDSPUtils
+class DSPUtils
 {
 public:
     DSPUtils() = default;
@@ -16,13 +16,13 @@ public:
       : mMaxPercentFrequencyDelta(max_percent_freq_delta){};
 
     void
-    BitReversal(std::vector<Complex>& signal) override;
+    BitReversal(std::vector<Complex>& signal);
 
     void
-    ZeroPadding(std::vector<Complex>& signal) override;
+    ZeroPadding(std::vector<Complex>& signal);
 
     std::vector<std::pair<double, double>>
-    FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks) override;
+    FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
 
 private:
     double mMaxPercentFrequencyDelta = 0.05;

@@ -7,9 +7,9 @@ add_executable(${PROJECT_NAME}_test)
 target_compile_features(${PROJECT_NAME}_test PUBLIC cxx_std_20)
 
 set(GTEST_FILES
-    TestDSPUtils.cpp
-    TestFFT.cpp
-    utils/TestUtils.cpp
+    test_dsp_utils.cpp
+    test_fft.cpp
+    utils/testing_utils.cpp
 )
 
 target_sources(${PROJECT_NAME}_test

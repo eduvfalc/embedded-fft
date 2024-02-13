@@ -1,6 +1,6 @@
 target_sources(${PROJECT_NAME}_lib
     PRIVATE
-        FFT.cpp
-        DSPUtils.cpp
-        SignalGenerator.cpp
+        fft.cpp
+        dsp_utils.cpp
+        signal_generator.cpp
 )

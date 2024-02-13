@@ -5,9 +5,9 @@
 #include <memory>
 #include <utility>
 #include <vector>
-#include "DSPUtils.hpp"
-#include "FFT.hpp"
-#include "SignalGenerator.hpp"
+#include "dsp_utils.hpp"
+#include "fft.hpp"
+#include "signal_generator.hpp"
 
 using Complex = std::complex<double>;
 
@@ -36,8 +36,8 @@ main()
     generator->ApplyHannWindow(signal);
 
     // compute FFT
-    std::shared_ptr<IDSPUtils> dsp_utils = std::make_shared<DSPUtils>();
-    std::shared_ptr<IFFT>      fft       = std::make_shared<FFT>(dsp_utils);
+    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<FFT>      fft       = std::make_shared<FFT>(dsp_utils);
     fft->Compute(signal);
 
     // calculate peak

@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(include)
-include_directories(include/interfaces)
-
 add_library(${PROJECT_NAME}_lib STATIC)
 target_compile_features(${PROJECT_NAME}_lib PUBLIC cxx_std_20)
 add_subdirectory(src)

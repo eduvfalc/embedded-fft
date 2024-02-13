@@ -4,23 +4,22 @@
 #include <complex>
 #include <memory>
 #include <vector>
-#include "IDSPUtils.hpp"
-#include "IFFT.hpp"
+#include "dsp_utils.hpp"
 
 using Complex = std::complex<double>;
 
-class FFT : public IFFT
+class FFT
 {
 public:
     FFT() = delete;
-    explicit FFT(std::shared_ptr<IDSPUtils> dsp_utils)
+    explicit FFT(std::shared_ptr<DSPUtils> dsp_utils)
       : mDSPUtils(dsp_utils){};
 
     void
-    Compute(std::vector<Complex>& signal) override;
+    Compute(std::vector<Complex>& signal);
 
 private:
-    std::shared_ptr<IDSPUtils> mDSPUtils = nullptr;
+    std::shared_ptr<DSPUtils> mDSPUtils = nullptr;
 };
 
 #endif  // H_FFT_HPP

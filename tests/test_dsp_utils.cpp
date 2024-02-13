@@ -1,10 +1,10 @@
 #include <memory>
 #include <numeric>
 #include <vector>
-#include "DSPUtils.hpp"
-#include "SignalGenerator.hpp"
+#include "dsp_utils.hpp"
 #include "gtest/gtest.h"
-#include "utils/TestUtils.hpp"
+#include "signal_generator.hpp"
+#include "utils/testing_utils.hpp"
 
 using Complex          = std::complex<double>;
 using SignalParameters = std::vector<std::pair<double, double>>;
@@ -26,13 +26,13 @@ const std::vector<Complex> k4bits{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11,
 class TestBitReversal : public ::testing::TestWithParam<std::vector<Complex>>
 {
 protected:
-    std::shared_ptr<IDSPUtils> dsp_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
 };
 
 class TestZeroPadding : public ::testing::TestWithParam<int>
 {
 protected:
-    std::shared_ptr<IDSPUtils> dsp_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
 };
 
 TEST_P(TestBitReversal, BitsAreReversed)

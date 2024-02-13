@@ -1,4 +1,4 @@
-#include "FFT.hpp"
+#include "fft.hpp"
 #include <cmath>
 #include <complex>
 #include <memory>
