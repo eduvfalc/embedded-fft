@@ -41,13 +41,14 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
 double
 DSPUtils::Normalize(std::vector<Complex>& signal)
 {
-    auto max_it = std::max(signal.begin(), signal.end(), [](const Complex& b1, const Complex& b2) {
+    auto max_it        = std::max_element(signal.begin(), signal.end(), [](const Complex& b1, const Complex& b2) {
         return std::abs(b1) < std::abs(b2);
     });
-    std::transform(signal.begin(), signal.end(), signal.begin(), [max_it](auto& bin) {
-        return cnl::quotient(bin, *max_it);
+    auto max_amplitude = std::abs(*max_it);
+    std::transform(signal.begin(), signal.end(), signal.begin(), [max_amplitude](auto& bin) {
+        return Complex(cnl::quotient(bin.real(), max_amplitude), cnl::quotient(bin.imag(), max_amplitude));
     });
-    return static_cast<double>(std::abs(*max_it));
+    return static_cast<double>(max_amplitude);
 }
 
 std::vector<std::pair<double, double>>

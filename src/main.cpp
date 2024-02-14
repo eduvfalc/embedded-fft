@@ -14,7 +14,7 @@ int
 main()
 {
     // sine parameters (amplitude, frequency)
-    std::vector<std::pair<double, double>> parameters{{1, 60}};
+    std::vector<std::pair<double, double>> parameters{{10, 60}};
 
     // signal generator parameters (mind the trade-off in between frequency/time resolution)
     std::chrono::nanoseconds sampling_period
@@ -31,22 +31,21 @@ main()
     // generate sine function
     generator->GenerateSines(signal, parameters);
 
+    // normalize
+    std::shared_ptr<DSPUtils> dsp_utils     = std::make_shared<DSPUtils>();
+    auto                      max_amplitude = dsp_utils->Normalize(signal);
+
     // apply the Hann window
     generator->ApplyHannWindow(signal);
 
     // compute FFT
-    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
-    std::shared_ptr<FFT>      fft       = std::make_shared<FFT>(dsp_utils);
+    std::shared_ptr<FFT> fft = std::make_shared<FFT>(dsp_utils);
     fft->Compute(signal);
 
     // calculate peak
     auto peak_data = dsp_utils->FindPeaks(signal, sampling_period, parameters.size());
-    std::cout << "Peak: " << peak_data[0].first << std::endl << "Peak freq: " << peak_data[0].second << std::endl;
-
-    for (auto const& x : signal) {
-        std::cout << std::abs(x) << ", ";
-    }
-    std::cout << std::endl;
+    std::cout << "Peak: " << peak_data[0].first * max_amplitude << std::endl
+              << "Peak freq: " << peak_data[0].second << std::endl;
 
     return 0;
 }
