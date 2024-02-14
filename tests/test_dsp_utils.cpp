@@ -9,19 +9,15 @@
 
 using SignalParameters = std::vector<std::pair<double, double>>;
 
-// peak detection error tolerances
-constexpr auto kAmplitudeTolerance = 0.15;
-constexpr auto kFrequencyTolerance = 0.05;
-
 // signal generator
 constexpr std::chrono::nanoseconds kDuration       = std::chrono::seconds(2);
 constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1);
 
 // bit reversal test data
-const std::vector<Complex> k1bit{0, 1};
-const std::vector<Complex> k2bits{0, 2, 1, 3};
-const std::vector<Complex> k3bits{0, 4, 2, 6, 1, 5, 3, 7};
-const std::vector<Complex> k4bits{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
+const std::vector<Complex> k1bit{{0, 0},{1, 0}};
+const std::vector<Complex> k2bits{{0, 0}, {2, 0}, {1, 0}, {3, 0}};
+const std::vector<Complex> k3bits{{0, 0}, {4, 0}, {2, 0}, {6, 0}, {1, 0}, {5, 0}, {3, 0}, {7, 0}};
+const std::vector<Complex> k4bits{{0, 0}, {8, 0}, {4, 0}, {12, 0}, {2, 0}, {10, 0}, {6, 0}, {14, 0}, {1, 0}, {9, 0}, {5, 0}, {13, 0}, {3, 0}, {11, 0}, {7, 0}, {15, 0}};
 
 class TestBitReversal : public ::testing::TestWithParam<std::vector<Complex>>
 {

@@ -20,8 +20,8 @@ FFT::Compute(std::vector<Complex>& signal)
         for (uint32_t i = 0; i < n; i += len) {
             Complex w(1);
             for (uint32_t j = 0; j < len / 2; ++j) {
-                Complex u               = signal[i + j];
-                Complex v               = w * signal[i + j + len / 2];
+                auto u               = signal[i + j];
+                auto v               = w * signal[i + j + len / 2];
                 signal[i + j]           = u + v;
                 signal[i + j + len / 2] = u - v;
                 w *= wlen;

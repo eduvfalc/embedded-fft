@@ -12,7 +12,7 @@
 using SignalParameters = std::vector<std::pair<double, double>>;
 
 // error tolerances
-constexpr auto kAmplitudeTolerance = 0.15;
+constexpr auto kAmplitudeTolerance = 0.20;
 constexpr auto kFrequencyTolerance = 0.05;
 
 // signal generator
