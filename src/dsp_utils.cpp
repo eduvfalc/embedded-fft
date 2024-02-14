@@ -38,6 +38,18 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
     }
 }
 
+double
+DSPUtils::Normalize(std::vector<Complex>& signal)
+{
+    auto max_it = std::max(signal.begin(), signal.end(), [](const Complex& b1, const Complex& b2) {
+        return std::abs(b1) < std::abs(b2);
+    });
+    std::transform(signal.begin(), signal.end(), signal.begin(), [max_it](auto& bin) {
+        return cnl::quotient(bin, *max_it);
+    });
+    return static_cast<double>(std::abs(*max_it));
+}
+
 std::vector<std::pair<double, double>>
 DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
 {

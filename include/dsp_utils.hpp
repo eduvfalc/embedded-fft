@@ -23,6 +23,9 @@ public:
     std::vector<std::pair<double, double>>
     FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
 
+    double
+    Normalize(std::vector<Complex>& signal);
+
 private:
     double mMaxPercentFrequencyDelta = 0.05;
 };
