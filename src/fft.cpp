@@ -6,6 +6,8 @@
 #include <vector>
 #include "fft_types.hpp"
 
+using namespace fftemb;
+
 void
 FFT::compute(std::vector<Complex>& signal)
 {

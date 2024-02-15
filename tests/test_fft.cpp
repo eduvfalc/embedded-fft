@@ -11,6 +11,7 @@
 #include "utils/testing_utils.hpp"
 
 using SignalParameters = std::vector<std::pair<double, double>>;
+using namespace fftemb;
 
 // error tolerances
 constexpr auto k_peak_tolerance      = 0.17;
@@ -24,7 +25,6 @@ const SignalGenerator              g_generator       = SignalGenerator(k_duratio
 // signal generator functions
 auto pSineWaveGenerator
     = std::bind(&SignalGenerator::generate_sine_wave, &g_generator, std::placeholders::_1, std::placeholders::_2);
-
 auto pSquareWaveGenerator
     = std::bind(&SignalGenerator::generate_square_wave, &g_generator, std::placeholders::_1, std::placeholders::_2);
 

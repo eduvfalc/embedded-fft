@@ -4,6 +4,8 @@
 #include <vector>
 #include "fft_types.hpp"
 
+using namespace fftemb;
+
 SignalGenerator::SignalGenerator(std::chrono::nanoseconds duration, std::chrono::nanoseconds sampling_period)
   : m_duration(duration)
   , m_sampling_period(sampling_period){};

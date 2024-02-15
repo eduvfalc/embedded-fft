@@ -10,6 +10,8 @@
 #include "fft_types.hpp"
 #include "signal_generator.hpp"
 
+using namespace fftemb;
+
 int
 main()
 {

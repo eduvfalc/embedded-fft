@@ -6,6 +6,8 @@
 #include <vector>
 #include "fft_types.hpp"
 
+namespace fftemb
+{
 class DSPUtils
 {
 public:
@@ -33,5 +35,6 @@ private:
     double m_max_frequency_delta_pct = 0.05;
     double m_dc_leakage_frequency    = 2;
 };
+}  // namespace fftemb
 
 #endif  // H_DSP_UTILS_HPP

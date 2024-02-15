@@ -7,6 +7,8 @@
 #include <vector>
 #include "fft_types.hpp"
 
+namespace fftemb
+{
 class SignalGenerator
 {
 public:
@@ -24,5 +26,6 @@ private:
     std::chrono::nanoseconds m_duration;
     std::chrono::nanoseconds m_sampling_period;
 };
+}  // namespace fftemb
 
 #endif  // H_SIGNAL_GENERATOR_HPP

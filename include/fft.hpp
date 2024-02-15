@@ -7,6 +7,8 @@
 #include "dsp_utils.hpp"
 #include "fft_types.hpp"
 
+namespace fftemb
+{
 class FFT
 {
 public:
@@ -20,5 +22,6 @@ public:
 private:
     std::shared_ptr<DSPUtils> m_dsp_utils = nullptr;
 };
+}  // namespace fftemb
 
 #endif  // H_FFT_HPP
