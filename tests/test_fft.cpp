@@ -57,12 +57,12 @@ TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
     fft->compute(test_signal);
 
     auto peak_data = dsp_utils->find_peaks(test_signal, k_sampling_period, signal_parameters.size());
-    std::transform(peak_data.begin(), peak_data.end(), peak_data.begin(), [max_peak](const auto& peak) {
-        return std::make_pair(peak.first * max_peak, peak.second);
-    });
-    test_utils::SortPairs(peak_data);
-    test_utils::SortPairs(signal_parameters);
-    const auto peak_errors = test_utils::CalculateError(peak_data, signal_parameters);
+    for (auto& peak : peak_data) {
+        peak.first *= max_peak;
+    }
+    test_utils::sort_pairs(peak_data);
+    test_utils::sort_pairs(signal_parameters);
+    const auto peak_errors = test_utils::calculate_error(peak_data, signal_parameters);
     for (const auto& error : peak_errors) {
         EXPECT_LE(error.first, k_peak_tolerance);
         EXPECT_LE(error.second, k_frequency_tolerance);
@@ -71,27 +71,27 @@ TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
 
 TEST_P(TestSquareFFT, SquareWaveSpectrumWithinTolerance)
 {
-    std::vector<Complex> test_signal;
-    auto                 test_params = GetParam();
-    auto                 frequency   = test_params.second;
+    std::vector<Complex>                   test_signal;
+    auto                                   test_params = GetParam();
+    std::vector<std::pair<double, double>> signal_parameters;
+    auto                                   frequency = test_params.second;
     test_params.first(test_signal, frequency);
     auto max_peak = dsp_utils->normalize(test_signal);
     dsp_utils->apply_hann_window(test_signal);
     auto num_peaks = 3;
+    for (int i = 1; i <= num_peaks * 2; i += 2) {
+        signal_parameters.emplace_back(std::make_pair(4 / (i * std::numbers::pi), i * frequency));
+    }
 
     fft->compute(test_signal);
 
     auto peak_data = dsp_utils->find_peaks(test_signal, k_sampling_period, num_peaks);
-    std::transform(peak_data.begin(), peak_data.end(), peak_data.begin(), [max_peak](const auto& peak) {
-        return std::make_pair(peak.first * max_peak, peak.second);
-    });
-    test_utils::SortPairs(peak_data);
-    std::vector<std::pair<double, double>> signal_parameters;
-    for (int i = 1; i <= num_peaks * 2; i += 2) {
-        signal_parameters.emplace_back(std::make_pair(4 / (i * std::numbers::pi), i * frequency));
+    for (auto& peak : peak_data) {
+        peak.first *= max_peak;
     }
-    test_utils::SortPairs(signal_parameters);
-    const auto peak_errors = test_utils::CalculateError(peak_data, signal_parameters);
+    test_utils::sort_pairs(peak_data);
+    test_utils::sort_pairs(signal_parameters);
+    const auto peak_errors = test_utils::calculate_error(peak_data, signal_parameters);
     for (const auto& error : peak_errors) {
         EXPECT_LE(error.first, k_peak_tolerance);
         EXPECT_LE(error.second, k_frequency_tolerance);
