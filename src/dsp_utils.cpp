@@ -67,7 +67,7 @@ DSPUtils::find_peaks(std::vector<Complex>& signal, std::chrono::nanoseconds samp
         });
         if (min_it != peak_data.end() && amplitude > min_it->first) {
             const auto frequency = i * 1 / (signal_size * t_s);
-            if (frequency > m_dc_leakage_frequency) {
+            if (frequency > m_max_dc_leakage_frequency_hz) {
                 auto neighbor_it
                     = std::find_if(peak_data.begin(), peak_data.end(), [frequency, this](const auto& peak) {
                           return std::abs(1 - frequency / peak.second) < m_max_frequency_delta_pct;

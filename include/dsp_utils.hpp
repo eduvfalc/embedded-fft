@@ -13,8 +13,9 @@ class DSPUtils
 public:
     DSPUtils() = default;
 
-    explicit DSPUtils(double max_frequency_delta_pct)
-      : m_max_frequency_delta_pct(max_frequency_delta_pct){};
+    DSPUtils(double max_frequency_delta_pct, double max_dc_leakage_frequency_hz)
+      : m_max_frequency_delta_pct(max_frequency_delta_pct)
+      , m_max_dc_leakage_frequency_hz(max_dc_leakage_frequency_hz){};
 
     void
     bit_reversal(std::vector<Complex>& signal);
@@ -32,8 +33,8 @@ public:
     apply_hann_window(std::vector<Complex>& signal) const;
 
 private:
-    double m_max_frequency_delta_pct = 0.05;
-    double m_dc_leakage_frequency    = 2;
+    double m_max_frequency_delta_pct     = 0.05;
+    double m_max_dc_leakage_frequency_hz = 2;
 };
 }  // namespace fftemb
 
