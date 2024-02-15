@@ -39,11 +39,15 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
     auto                 test_params       = GetParam();
     auto                 signal_parameters = test_params.second;
     test_params.first(test_signal, signal_parameters);
+    auto max_amplitude = mDspUtils->Normalize(test_signal);
     gGenerator.ApplyHannWindow(test_signal);
 
     mFFT->Compute(test_signal);
 
     auto peak_data = mDspUtils->FindPeaks(test_signal, kSamplingPeriod, signal_parameters.size());
+    std::transform(peak_data.begin(), peak_data.end(), peak_data.begin(), [max_amplitude](const auto& peak) {
+        return std::make_pair(peak.first * max_amplitude, peak.second);
+    });
     test_utils::SortPairs(peak_data);
     test_utils::SortPairs(signal_parameters);
     const auto peak_errors = test_utils::CalculateError(peak_data, signal_parameters);
