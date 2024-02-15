@@ -12,13 +12,13 @@ class FFT
 public:
     FFT() = delete;
     explicit FFT(std::shared_ptr<DSPUtils> dsp_utils)
-      : mDSPUtils(dsp_utils){};
+      : m_dsp_utils(dsp_utils){};
 
     void
-    Compute(std::vector<Complex>& signal);
+    compute(std::vector<Complex>& signal);
 
 private:
-    std::shared_ptr<DSPUtils> mDSPUtils = nullptr;
+    std::shared_ptr<DSPUtils> m_dsp_utils = nullptr;
 };
 
 #endif  // H_FFT_HPP

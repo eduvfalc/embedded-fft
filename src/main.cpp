@@ -29,21 +29,21 @@ main()
     std::shared_ptr<SignalGenerator> generator = std::make_shared<SignalGenerator>(duration, sampling_period);
 
     // generate sine function
-    generator->GenerateSines(signal, parameters);
+    generator->generate_sine_wave(signal, parameters);
 
     // normalize
     std::shared_ptr<DSPUtils> dsp_utils     = std::make_shared<DSPUtils>();
-    auto                      max_amplitude = dsp_utils->Normalize(signal);
+    auto                      max_amplitude = dsp_utils->normalize(signal);
 
     // apply the Hann window
-    dsp_utils->ApplyHannWindow(signal);
+    dsp_utils->apply_hann_window(signal);
 
     // compute FFT
     std::shared_ptr<FFT> fft = std::make_shared<FFT>(dsp_utils);
-    fft->Compute(signal);
+    fft->compute(signal);
 
     // calculate peak
-    auto peak_data = dsp_utils->FindPeaks(signal, sampling_period, parameters.size());
+    auto peak_data = dsp_utils->find_peaks(signal, sampling_period, parameters.size());
     std::cout << "Peak: " << peak_data[0].first * max_amplitude << std::endl
               << "Peak freq: " << peak_data[0].second << std::endl;
 

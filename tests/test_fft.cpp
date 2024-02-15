@@ -16,35 +16,35 @@ constexpr auto kAmplitudeTolerance = 0.20;
 constexpr auto kFrequencyTolerance = 0.05;
 
 // signal generator
-constexpr std::chrono::nanoseconds kDuration       = std::chrono::seconds(2);
-constexpr std::chrono::nanoseconds kSamplingPeriod = std::chrono::milliseconds(1);
-const SignalGenerator              gGenerator      = SignalGenerator(kDuration, kSamplingPeriod);
+constexpr std::chrono::nanoseconds k_duration        = std::chrono::seconds(2);
+constexpr std::chrono::nanoseconds k_sampling_period = std::chrono::milliseconds(1);
+const SignalGenerator              g_generator       = SignalGenerator(k_duration, k_sampling_period);
 
 // signal generator functions
 auto pSineWavesGenerator
-    = std::bind(&SignalGenerator::GenerateSines, &gGenerator, std::placeholders::_1, std::placeholders::_2);
+    = std::bind(&SignalGenerator::generate_sine_wave, &g_generator, std::placeholders::_1, std::placeholders::_2);
 
 class TestFFT
   : public ::testing::TestWithParam<
         std::pair<std::function<void(std::vector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
 protected:
-    std::shared_ptr<DSPUtils> mDspUtils = std::make_shared<DSPUtils>();
-    std::shared_ptr<FFT>      mFFT      = std::make_shared<FFT>(mDspUtils);
+    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<FFT>      fft       = std::make_shared<FFT>(dsp_utils);
 };
 
-TEST_P(TestFFT, ComputeSinusoidalSpectrum)
+TEST_P(TestFFT, computeSinusoidalSpectrum)
 {
     std::vector<Complex> test_signal;
     auto                 test_params       = GetParam();
     auto                 signal_parameters = test_params.second;
     test_params.first(test_signal, signal_parameters);
-    auto max_amplitude = mDspUtils->Normalize(test_signal);
-    mDspUtils->ApplyHannWindow(test_signal);
+    auto max_amplitude = dsp_utils->normalize(test_signal);
+    dsp_utils->apply_hann_window(test_signal);
 
-    mFFT->Compute(test_signal);
+    fft->compute(test_signal);
 
-    auto peak_data = mDspUtils->FindPeaks(test_signal, kSamplingPeriod, signal_parameters.size());
+    auto peak_data = dsp_utils->find_peaks(test_signal, k_sampling_period, signal_parameters.size());
     std::transform(peak_data.begin(), peak_data.end(), peak_data.begin(), [max_amplitude](const auto& peak) {
         return std::make_pair(peak.first * max_amplitude, peak.second);
     });

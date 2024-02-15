@@ -7,10 +7,10 @@
 #include "fft_types.hpp"
 
 void
-FFT::Compute(std::vector<Complex>& signal)
+FFT::compute(std::vector<Complex>& signal)
 {
-    mDSPUtils->ZeroPadding(signal);
-    mDSPUtils->BitReversal(signal);
+    m_dsp_utils->zero_padding(signal);
+    m_dsp_utils->bit_reversal(signal);
 
     int n = signal.size();
     for (uint32_t len = 2; len <= n; len <<= 1) {
@@ -20,8 +20,8 @@ FFT::Compute(std::vector<Complex>& signal)
         for (uint32_t i = 0; i < n; i += len) {
             Complex w(1);
             for (uint32_t j = 0; j < len / 2; ++j) {
-                auto u               = signal[i + j];
-                auto v               = w * signal[i + j + len / 2];
+                auto u                  = signal[i + j];
+                auto v                  = w * signal[i + j + len / 2];
                 signal[i + j]           = u + v;
                 signal[i + j + len / 2] = u - v;
                 w *= wlen;

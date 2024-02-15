@@ -9,8 +9,8 @@ SignalGenerator::SignalGenerator(std::chrono::nanoseconds duration, std::chrono:
   , mSamplingPeriod(sampling_period){};
 
 void
-SignalGenerator::GenerateSines(std::vector<Complex>&                         signal,
-                               const std::vector<std::pair<double, double>>& parameters) const
+SignalGenerator::generate_sine_wave(std::vector<Complex>&                         signal,
+                                    const std::vector<std::pair<double, double>>& parameters) const
 {
     for (std::chrono::nanoseconds dt(0); dt <= mDuration; dt += mSamplingPeriod) {
         double signal_value = 0;

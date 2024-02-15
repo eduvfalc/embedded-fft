@@ -7,7 +7,7 @@
 #include "fft_types.hpp"
 
 void
-DSPUtils::BitReversal(std::vector<Complex>& signal)
+DSPUtils::bit_reversal(std::vector<Complex>& signal)
 {
     auto n      = signal.size();
     int  levels = log2(n);
@@ -26,7 +26,7 @@ DSPUtils::BitReversal(std::vector<Complex>& signal)
 }
 
 void
-DSPUtils::ZeroPadding(std::vector<Complex>& signal)
+DSPUtils::zero_padding(std::vector<Complex>& signal)
 {
     int signalSize = signal.size();
     int nextPow2   = 1;
@@ -40,7 +40,7 @@ DSPUtils::ZeroPadding(std::vector<Complex>& signal)
 }
 
 double
-DSPUtils::Normalize(std::vector<Complex>& signal)
+DSPUtils::normalize(std::vector<Complex>& signal)
 {
     auto max_it        = std::max_element(signal.begin(), signal.end(), [](const Complex& b1, const Complex& b2) {
         return std::abs(b1) < std::abs(b2);
@@ -53,7 +53,7 @@ DSPUtils::Normalize(std::vector<Complex>& signal)
 }
 
 std::vector<std::pair<double, double>>
-DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
+DSPUtils::find_peaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
     const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
@@ -66,7 +66,7 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampl
         if (min_it != peak_data.end() && amplitude > min_it->first) {
             const auto frequency = i * 1 / (signal_size * t_s);
             auto neighbor_it = std::find_if(peak_data.begin(), peak_data.end(), [&frequency, this](const auto& peak) {
-                return std::abs(1 - frequency / peak.second) < mMaxPercentFrequencyDelta;
+                return std::abs(1 - frequency / peak.second) < m_max_frequency_delta_pct;
             });
             if (neighbor_it != peak_data.end()) {
                 if (amplitude > neighbor_it->first) {
@@ -82,7 +82,7 @@ DSPUtils::FindPeaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampl
 }
 
 void
-DSPUtils::ApplyHannWindow(std::vector<Complex>& signal) const
+DSPUtils::apply_hann_window(std::vector<Complex>& signal) const
 {
     Complex correction_fator{2, 0};
     auto    signal_size = signal.size();

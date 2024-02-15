@@ -15,7 +15,7 @@ public:
     SignalGenerator(std::chrono::nanoseconds duration, std::chrono::nanoseconds sampling_period);
 
     void
-    GenerateSines(std::vector<Complex>& signal, const std::vector<std::pair<double, double>>& parameters) const;
+    generate_sine_wave(std::vector<Complex>& signal, const std::vector<std::pair<double, double>>& parameters) const;
 
 private:
     std::chrono::nanoseconds mDuration;
