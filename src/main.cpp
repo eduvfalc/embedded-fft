@@ -36,7 +36,7 @@ main()
     auto                      max_amplitude = dsp_utils->Normalize(signal);
 
     // apply the Hann window
-    generator->ApplyHannWindow(signal);
+    dsp_utils->ApplyHannWindow(signal);
 
     // compute FFT
     std::shared_ptr<FFT> fft = std::make_shared<FFT>(dsp_utils);

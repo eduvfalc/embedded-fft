@@ -40,7 +40,7 @@ TEST_P(TestFFT, ComputeSinusoidalSpectrum)
     auto                 signal_parameters = test_params.second;
     test_params.first(test_signal, signal_parameters);
     auto max_amplitude = mDspUtils->Normalize(test_signal);
-    gGenerator.ApplyHannWindow(test_signal);
+    mDspUtils->ApplyHannWindow(test_signal);
 
     mFFT->Compute(test_signal);
 

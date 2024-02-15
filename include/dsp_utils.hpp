@@ -26,6 +26,9 @@ public:
     double
     Normalize(std::vector<Complex>& signal);
 
+    void
+    ApplyHannWindow(std::vector<Complex>& signal) const;
+
 private:
     double mMaxPercentFrequencyDelta = 0.05;
 };
