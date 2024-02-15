@@ -65,16 +65,19 @@ DSPUtils::find_peaks(std::vector<Complex>& signal, std::chrono::nanoseconds samp
         });
         if (min_it != peak_data.end() && amplitude > min_it->first) {
             const auto frequency = i * 1 / (signal_size * t_s);
-            auto neighbor_it = std::find_if(peak_data.begin(), peak_data.end(), [&frequency, this](const auto& peak) {
-                return std::abs(1 - frequency / peak.second) < m_max_frequency_delta_pct;
-            });
-            if (neighbor_it != peak_data.end()) {
-                if (amplitude > neighbor_it->first) {
-                    *neighbor_it = {static_cast<double>(amplitude), frequency};
+            if (frequency > m_dc_leakage_frequency) {
+                auto neighbor_it
+                    = std::find_if(peak_data.begin(), peak_data.end(), [frequency, this](const auto& peak) {
+                          return std::abs(1 - frequency / peak.second) < m_max_frequency_delta_pct;
+                      });
+                if (neighbor_it != peak_data.end()) {
+                    if (amplitude > neighbor_it->first) {
+                        *neighbor_it = {static_cast<double>(amplitude), frequency};
+                    }
                 }
-            }
-            else {
-                *min_it = {static_cast<double>(amplitude), frequency};
+                else {
+                    *min_it = {static_cast<double>(amplitude), frequency};
+                }
             }
         }
     }

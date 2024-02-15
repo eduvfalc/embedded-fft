@@ -10,10 +10,10 @@
 using SignalParameters = std::vector<std::pair<double, double>>;
 
 // bit reversal test data
-const std::vector<Complex> k1bit{{0, 0}, {1, 0}};
-const std::vector<Complex> k2bits{{0, 0}, {2, 0}, {1, 0}, {3, 0}};
-const std::vector<Complex> k3bits{{0, 0}, {4, 0}, {2, 0}, {6, 0}, {1, 0}, {5, 0}, {3, 0}, {7, 0}};
-const std::vector<Complex> k4bits{{0, 0},
+const std::vector<Complex> k_1_bit_reversed{{0, 0}, {1, 0}};
+const std::vector<Complex> k_2_bits_reversed{{0, 0}, {2, 0}, {1, 0}, {3, 0}};
+const std::vector<Complex> k_3_bits_reversed{{0, 0}, {4, 0}, {2, 0}, {6, 0}, {1, 0}, {5, 0}, {3, 0}, {7, 0}};
+const std::vector<Complex> k_4_bits_reversed{{0, 0},
                                   {8, 0},
                                   {4, 0},
                                   {12, 0},
@@ -68,6 +68,6 @@ TEST_P(Testzero_padding, SignalsArePowersOf2)
     EXPECT_EQ(test_signal.size(), next_pow_2);
 }
 
-INSTANTIATE_TEST_CASE_P(bit_reversal, Testbit_reversal, ::testing::Values(k1bit, k2bits, k3bits, k4bits));
+INSTANTIATE_TEST_CASE_P(bit_reversal, Testbit_reversal, ::testing::Values(k_1_bit_reversed, k_2_bits_reversed, k_3_bits_reversed, k_4_bits_reversed));
 
 INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2, Testzero_padding, ::testing::Values(3, 5, 12, 100));

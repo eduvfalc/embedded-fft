@@ -17,9 +17,12 @@ public:
     void
     generate_sine_wave(std::vector<Complex>& signal, const std::vector<std::pair<double, double>>& parameters) const;
 
+    void
+    generate_square_wave(std::vector<Complex>& signal, double frequency) const;
+
 private:
-    std::chrono::nanoseconds mDuration;
-    std::chrono::nanoseconds mSamplingPeriod;
+    std::chrono::nanoseconds m_duration;
+    std::chrono::nanoseconds m_sampling_period;
 };
 
 #endif  // H_SIGNAL_GENERATOR_HPP
