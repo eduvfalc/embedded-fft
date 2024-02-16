@@ -3,13 +3,13 @@
 #include <complex>
 #include <memory>
 #include <numbers>
-#include <vector>
+#include "etl/vector.h"
 #include "fft_types.hpp"
 
 using namespace fftemb;
 
 void
-FFT::compute(std::vector<Complex>& signal)
+FFT::compute(etl::ivector<Complex>& signal)
 {
     m_dsp_utils->zero_padding(signal);
     m_dsp_utils->bit_reversal(signal);

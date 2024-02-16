@@ -3,7 +3,7 @@
 
 #include <chrono>
 #include <complex>
-#include <vector>
+#include "etl/vector.h"
 #include "fft_types.hpp"
 
 namespace fftemb
@@ -18,19 +18,19 @@ public:
       , m_max_dc_leakage_frequency_hz(max_dc_leakage_frequency_hz){};
 
     void
-    bit_reversal(std::vector<Complex>& signal);
+    bit_reversal(etl::ivector<Complex>& signal);
 
     void
-    zero_padding(std::vector<Complex>& signal);
+    zero_padding(etl::ivector<Complex>& signal);
 
     std::vector<std::pair<double, double>>
-    find_peaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
+    find_peaks(etl::ivector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
 
     double
-    normalize(std::vector<Complex>& signal);
+    normalize(etl::ivector<Complex>& signal);
 
     void
-    apply_hann_window(std::vector<Complex>& signal) const;
+    apply_hann_window(etl::ivector<Complex>& signal) const;
 
 private:
     double m_max_frequency_delta_pct     = 0.05;

@@ -4,12 +4,13 @@
 #include <complex>
 #include <numbers>
 #include <vector>
+#include "etl/vector.h"
 #include "fft_types.hpp"
 
 using namespace fftemb;
 
 void
-DSPUtils::bit_reversal(std::vector<Complex>& signal)
+DSPUtils::bit_reversal(etl::ivector<Complex>& signal)
 {
     auto n      = signal.size();
     int  levels = log2(n);
@@ -28,7 +29,7 @@ DSPUtils::bit_reversal(std::vector<Complex>& signal)
 }
 
 void
-DSPUtils::zero_padding(std::vector<Complex>& signal)
+DSPUtils::zero_padding(etl::ivector<Complex>& signal)
 {
     int signalSize = signal.size();
     int nextPow2   = 1;
@@ -42,7 +43,7 @@ DSPUtils::zero_padding(std::vector<Complex>& signal)
 }
 
 double
-DSPUtils::normalize(std::vector<Complex>& signal)
+DSPUtils::normalize(etl::ivector<Complex>& signal)
 {
     auto max_it        = std::max_element(signal.begin(), signal.end(), [](const Complex& b1, const Complex& b2) {
         return std::abs(b1) < std::abs(b2);
@@ -55,7 +56,7 @@ DSPUtils::normalize(std::vector<Complex>& signal)
 }
 
 std::vector<std::pair<double, double>>
-DSPUtils::find_peaks(std::vector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
+DSPUtils::find_peaks(etl::ivector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
     const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
@@ -87,7 +88,7 @@ DSPUtils::find_peaks(std::vector<Complex>& signal, std::chrono::nanoseconds samp
 }
 
 void
-DSPUtils::apply_hann_window(std::vector<Complex>& signal) const
+DSPUtils::apply_hann_window(etl::ivector<Complex>& signal) const
 {
     Complex correction_fator{2, 0};
     auto    signal_size = signal.size();

@@ -4,7 +4,8 @@
             "name": "ubuntu",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/local/include/cnl/**"
+                "/usr/local/include/cnl/**",
+                "/usr/local/include/etl/**"
             ],
             "defines": [
                 "_DEBUG",

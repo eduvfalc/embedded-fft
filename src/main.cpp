@@ -6,6 +6,7 @@
 #include <utility>
 #include <vector>
 #include "dsp_utils.hpp"
+#include "etl/vector.h"
 #include "fft.hpp"
 #include "fft_types.hpp"
 #include "signal_generator.hpp"
@@ -22,10 +23,10 @@ main()
     std::chrono::nanoseconds sampling_period
         = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(0.001));
     std::chrono::milliseconds duration(
-        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(2)));
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(1)));
 
     // create signal container
-    std::vector<Complex> signal;
+    etl::vector<Complex, 1024> signal(1024);
 
     // create signal generator
     std::shared_ptr<SignalGenerator> generator = std::make_shared<SignalGenerator>(duration, sampling_period);

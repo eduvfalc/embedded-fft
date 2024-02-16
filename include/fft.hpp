@@ -3,8 +3,8 @@
 
 #include <complex>
 #include <memory>
-#include <vector>
 #include "dsp_utils.hpp"
+#include "etl/vector.h"
 #include "fft_types.hpp"
 
 namespace fftemb
@@ -17,7 +17,7 @@ public:
       : m_dsp_utils(dsp_utils){};
 
     void
-    compute(std::vector<Complex>& signal);
+    compute(etl::ivector<Complex>& signal);
 
 private:
     std::shared_ptr<DSPUtils> m_dsp_utils = nullptr;

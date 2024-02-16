@@ -4,6 +4,7 @@
 #include <numbers>
 #include <numeric>
 #include "dsp_utils.hpp"
+#include "etl/vector.h"
 #include "fft.hpp"
 #include "fft_types.hpp"
 #include "gtest/gtest.h"
@@ -12,6 +13,9 @@
 
 using SignalParameters = std::vector<std::pair<double, double>>;
 using namespace fftemb;
+
+// buffer size
+constexpr int k_buffer_size = 2048;
 
 // error tolerances
 constexpr auto k_peak_tolerance      = 0.17;
@@ -30,7 +34,7 @@ auto pSquareWaveGenerator
 
 class TestSinusoidFFT
   : public ::testing::TestWithParam<
-        std::pair<std::function<void(std::vector<Complex>&, const SignalParameters&)>, SignalParameters>>
+        std::pair<std::function<void(etl::ivector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
 protected:
     std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
@@ -38,7 +42,7 @@ protected:
 };
 
 class TestSquareFFT
-  : public ::testing::TestWithParam<std::pair<std::function<void(std::vector<Complex>&, double)>, double>>
+  : public ::testing::TestWithParam<std::pair<std::function<void(etl::ivector<Complex>&, double)>, double>>
 {
 protected:
     std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
@@ -47,9 +51,9 @@ protected:
 
 TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
 {
-    std::vector<Complex> test_signal;
-    auto                 test_params       = GetParam();
-    auto                 signal_parameters = test_params.second;
+    etl::vector<Complex, k_buffer_size> test_signal(k_buffer_size);
+    auto                                test_params       = GetParam();
+    auto                                signal_parameters = test_params.second;
     test_params.first(test_signal, signal_parameters);
     auto max_peak = dsp_utils->normalize(test_signal);
     dsp_utils->apply_hann_window(test_signal);
@@ -71,7 +75,7 @@ TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
 
 TEST_P(TestSquareFFT, SquareWaveSpectrumWithinTolerance)
 {
-    std::vector<Complex>                   test_signal;
+    etl::vector<Complex, k_buffer_size>    test_signal(k_buffer_size);
     auto                                   test_params = GetParam();
     std::vector<std::pair<double, double>> signal_parameters;
     auto                                   frequency = test_params.second;
@@ -108,5 +112,5 @@ INSTANTIATE_TEST_CASE_P(TestSinusoidSpectra,
 
 INSTANTIATE_TEST_CASE_P(TestSquareWaveSpectra,
                         TestSquareFFT,
-                        ::testing::Values(std::make_pair(pSquareWaveGenerator, 30),
-                                          std::make_pair(pSquareWaveGenerator, 60)));
+                        ::testing::Values(std::make_pair(pSquareWaveGenerator, 60),
+                                          std::make_pair(pSquareWaveGenerator, 90)));

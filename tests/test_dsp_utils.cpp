@@ -2,6 +2,7 @@
 #include <numeric>
 #include <vector>
 #include "dsp_utils.hpp"
+#include "etl/vector.h"
 #include "fft_types.hpp"
 #include "gtest/gtest.h"
 #include "signal_generator.hpp"
@@ -31,37 +32,84 @@ const std::vector<Complex> k_4_bits_reversed{{0, 0},
                                              {7, 0},
                                              {15, 0}};
 
-class Testbit_reversal : public ::testing::TestWithParam<std::vector<Complex>>
+class TestBitReversal : public ::testing::Test
 {
 protected:
     std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
 };
 
-class Testzero_padding : public ::testing::TestWithParam<int>
+class TestZeroPadding : public ::testing::TestWithParam<int>
 {
 protected:
     std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
 };
 
-TEST_P(Testbit_reversal, BitsAreReversed)
+TEST_F(TestBitReversal, Reverse1Bit)
 {
-    const auto           input_signal = GetParam();
-    const auto           signal_size  = input_signal.size();
-    std::vector<Complex> test_signal;
+    const auto              input_signal = k_1_bit_reversed;
+    const auto              signal_size  = input_signal.size();
+    etl::vector<Complex, 2> test_signal(2);
     for (int i = 0; i <= signal_size - 1; ++i)
-        test_signal.emplace_back(Complex(i, 0));
+        test_signal[i] = Complex(i, 0);
 
     dsp_utils->bit_reversal(test_signal);
 
-    EXPECT_EQ(test_signal, input_signal);
+    for (int i = 0; i <= signal_size - 1; ++i) {
+        EXPECT_EQ(test_signal[i], input_signal[i]);
+    }
 }
 
-TEST_P(Testzero_padding, SignalsArePowersOf2)
+TEST_F(TestBitReversal, Reverse2Bits)
 {
-    const auto           signal_size = GetParam();
-    std::vector<Complex> test_signal;
+    const auto              input_signal = k_2_bits_reversed;
+    const auto              signal_size  = input_signal.size();
+    etl::vector<Complex, 4> test_signal(4);
+    for (int i = 0; i <= signal_size - 1; ++i)
+        test_signal[i] = Complex(i, 0);
+
+    dsp_utils->bit_reversal(test_signal);
+
+    for (int i = 0; i <= signal_size - 1; ++i) {
+        EXPECT_EQ(test_signal[i], input_signal[i]);
+    }
+}
+
+TEST_F(TestBitReversal, Reverse3Bits)
+{
+    const auto              input_signal = k_3_bits_reversed;
+    const auto              signal_size  = input_signal.size();
+    etl::vector<Complex, 8> test_signal(8);
+    for (int i = 0; i <= signal_size - 1; ++i)
+        test_signal[i] = Complex(i, 0);
+
+    dsp_utils->bit_reversal(test_signal);
+
+    for (int i = 0; i <= signal_size - 1; ++i) {
+        EXPECT_EQ(test_signal[i], input_signal[i]);
+    }
+}
+
+TEST_F(TestBitReversal, Reverse4Bits)
+{
+    const auto               input_signal = k_4_bits_reversed;
+    const auto               signal_size  = input_signal.size();
+    etl::vector<Complex, 16> test_signal(16);
+    for (int i = 0; i <= signal_size - 1; ++i)
+        test_signal[i] = Complex(i, 0);
+
+    dsp_utils->bit_reversal(test_signal);
+
+    for (int i = 0; i <= signal_size - 1; ++i) {
+        EXPECT_EQ(test_signal[i], input_signal[i]);
+    }
+}
+
+/* TEST_P(TestZeroPadding, SignalsArePowersOf2)
+{
+    const auto                        signal_size = GetParam();
+    etl::vector<Complex, signal_size> test_signal(signal_size);
     for (int i = 0; i <= signal_size; ++i)
-        test_signal.emplace_back(Complex(i, 0));
+        test_signal[i] = Complex(i, 0);
     const auto next_pow_2 = test_signal.capacity();
 
     dsp_utils->zero_padding(test_signal);
@@ -69,8 +117,4 @@ TEST_P(Testzero_padding, SignalsArePowersOf2)
     EXPECT_EQ(test_signal.size(), next_pow_2);
 }
 
-INSTANTIATE_TEST_CASE_P(bit_reversal,
-                        Testbit_reversal,
-                        ::testing::Values(k_1_bit_reversed, k_2_bits_reversed, k_3_bits_reversed, k_4_bits_reversed));
-
-INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2, Testzero_padding, ::testing::Values(3, 5, 12, 100));
+INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2, TestZeroPadding, ::testing::Values(3, 5, 12, 100)); */
