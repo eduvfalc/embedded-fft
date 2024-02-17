@@ -8,8 +8,8 @@
 #include "fft.hpp"
 #include "fft_types.hpp"
 #include "gtest/gtest.h"
-#include "signal_generator.hpp"
-#include "utils/testing_utils.hpp"
+#include "utils/include/signal_generator.hpp"
+#include "utils/include/testing_utils.hpp"
 
 using SignalParameters = std::vector<std::pair<double, double>>;
 using namespace fftemb;

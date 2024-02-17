@@ -1,4 +1,4 @@
-#include "signal_generator.hpp"
+#include "include/signal_generator.hpp"
 #include <math.h>
 #include <numbers>
 #include <vector>

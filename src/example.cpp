@@ -5,11 +5,11 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include "../tests/utils/include/signal_generator.hpp"
 #include "dsp_utils.hpp"
 #include "etl/vector.h"
 #include "fft.hpp"
 #include "fft_types.hpp"
-#include "signal_generator.hpp"
 
 using namespace fftemb;
 

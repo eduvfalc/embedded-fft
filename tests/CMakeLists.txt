@@ -10,6 +10,7 @@ set(GTEST_FILES
     test_dsp_utils.cpp
     test_fft.cpp
     utils/testing_utils.cpp
+    utils/signal_generator.cpp
 )
 
 target_sources(${PROJECT_NAME}_test
