@@ -2,12 +2,16 @@
 #define H_DSP_UTILS_HPP
 
 #include <chrono>
+#include <cmath>
 #include <complex>
+#include <numbers>
+#include <vector>
 #include "etl/vector.h"
 #include "fft_types.hpp"
 
 namespace fftemb
 {
+template <typename T = Complex, template <class U = T> class Container = etl::ivector>
 class DSPUtils
 {
 public:
@@ -18,24 +22,120 @@ public:
       , m_max_dc_leakage_frequency_hz(max_dc_leakage_frequency_hz){};
 
     void
-    bit_reversal(etl::ivector<Complex>& signal);
+    bit_reversal(Container<T>& signal);
 
     void
-    zero_padding(etl::ivector<Complex>& signal);
+    zero_padding(Container<T>& signal);
 
     std::vector<std::pair<double, double>>
-    find_peaks(etl::ivector<Complex>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
+    find_peaks(Container<T>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
 
     double
-    normalize(etl::ivector<Complex>& signal);
+    normalize(Container<T>& signal);
 
     void
-    apply_hann_window(etl::ivector<Complex>& signal) const;
+    apply_hann_window(Container<T>& signal) const;
 
 private:
     double m_max_frequency_delta_pct     = 0.05;
     double m_max_dc_leakage_frequency_hz = 2;
 };
+
+template <typename T, template <class> class Container>
+void
+DSPUtils<T, Container>::bit_reversal(Container<T>& signal)
+{
+    auto n      = signal.size();
+    int  levels = log2(n);
+
+    for (int i = 0; i < n; ++i) {
+        int j = 0;
+        for (int bit = 0; bit < levels; ++bit) {
+            if (i & (1 << bit)) {
+                j |= (1 << (levels - 1 - bit));
+            }
+        }
+        if (j > i) {
+            std::swap(signal[i], signal[j]);
+        }
+    }
+}
+
+template <typename T, template <class> class Container>
+void
+DSPUtils<T, Container>::zero_padding(Container<T>& signal)
+{
+    int signalSize = signal.size();
+    int nextPow2   = 1;
+    while (nextPow2 < signalSize) {
+        nextPow2 <<= 1;
+    }
+
+    if (nextPow2 > signalSize) {
+        signal.resize(nextPow2, {0, 0});
+    }
+}
+
+template <typename T, template <class> class Container>
+double
+DSPUtils<T, Container>::normalize(Container<T>& signal)
+{
+    auto max_it        = std::max_element(signal.begin(), signal.end(), [](const T& b1, const T& b2) {
+        return std::abs(b1) < std::abs(b2);
+    });
+    auto max_amplitude = std::abs(*max_it);
+    std::transform(signal.begin(), signal.end(), signal.begin(), [max_amplitude](auto& bin) {
+        return T(cnl::quotient(bin.real(), max_amplitude), cnl::quotient(bin.imag(), max_amplitude));
+    });
+    return static_cast<double>(max_amplitude);
+}
+
+template <typename T, template <class> class Container>
+std::vector<std::pair<double, double>>
+DSPUtils<T, Container>::find_peaks(Container<T>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
+{
+    std::vector<std::pair<double, double>> peak_data(max_peaks);
+    const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
+    const int  signal_size = signal.size();
+    for (int i = 1; i <= signal_size / 2; ++i) {
+        const auto amplitude = 2 * std::abs(signal[i]) / signal_size;
+        auto       min_it    = std::min_element(peak_data.begin(), peak_data.end(), [](const auto& a, const auto& b) {
+            return a.first < b.first;
+        });
+        if (min_it != peak_data.end() && amplitude > min_it->first) {
+            const auto frequency = i * 1 / (signal_size * t_s);
+            if (frequency > m_max_dc_leakage_frequency_hz) {
+                auto neighbor_it
+                    = std::find_if(peak_data.begin(), peak_data.end(), [frequency, this](const auto& peak) {
+                          return std::abs(1 - frequency / peak.second) < m_max_frequency_delta_pct;
+                      });
+                if (neighbor_it != peak_data.end()) {
+                    if (amplitude > neighbor_it->first) {
+                        *neighbor_it = {static_cast<double>(amplitude), frequency};
+                    }
+                }
+                else {
+                    *min_it = {static_cast<double>(amplitude), frequency};
+                }
+            }
+        }
+    }
+    return peak_data;
+}
+
+template <typename T, template <class> class Container>
+void
+DSPUtils<T, Container>::apply_hann_window(Container<T>& signal) const
+{
+    T    correction_fator{2, 0};
+    auto signal_size = signal.size();
+    for (int i = 0; i <= signal_size; ++i) {
+        T hanning_bin = {0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / signal_size), 0};
+        signal[i]     = signal[i] * hanning_bin * correction_fator;
+    }
+}
+
+
 }  // namespace fftemb
 
 #endif  // H_DSP_UTILS_HPP

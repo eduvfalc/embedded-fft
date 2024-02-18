@@ -11,7 +11,6 @@ add_library(${PROJECT_NAME}_lib STATIC)
 
 target_compile_features(${PROJECT_NAME}_lib PUBLIC cxx_std_20)
 
-add_subdirectory(src)
 add_subdirectory(tests/utils)
 
 if(UNIT_TEST)

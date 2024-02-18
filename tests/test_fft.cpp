@@ -37,16 +37,16 @@ class TestSinusoidFFT
         std::pair<std::function<void(etl::ivector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
 protected:
-    std::shared_ptr<DSPUtils>     dsp_utils = std::make_shared<DSPUtils>();
-    std::shared_ptr<FFT<Complex>> fft       = std::make_shared<FFT<Complex>>(dsp_utils);
+    std::shared_ptr<DSPUtils<Complex>> dsp_utils = std::make_shared<DSPUtils<Complex>>();
+    std::shared_ptr<FFT<Complex>>      fft       = std::make_shared<FFT<Complex>>(dsp_utils);
 };
 
 class TestSquareFFT
   : public ::testing::TestWithParam<std::pair<std::function<void(etl::ivector<Complex>&, double)>, double>>
 {
 protected:
-    std::shared_ptr<DSPUtils>     dsp_utils = std::make_shared<DSPUtils>();
-    std::shared_ptr<FFT<Complex>> fft       = std::make_shared<FFT<Complex>>(dsp_utils);
+    std::shared_ptr<DSPUtils<Complex>> dsp_utils = std::make_shared<DSPUtils<Complex>>();
+    std::shared_ptr<FFT<Complex>>      fft       = std::make_shared<FFT<Complex>>(dsp_utils);
 };
 
 TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)

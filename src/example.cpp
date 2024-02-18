@@ -35,8 +35,8 @@ main()
     generator->generate_sine_wave(signal, parameters);
 
     // normalize
-    std::shared_ptr<DSPUtils> dsp_utils     = std::make_shared<DSPUtils>();
-    auto                      max_amplitude = dsp_utils->normalize(signal);
+    std::shared_ptr<DSPUtils<Complex>> dsp_utils     = std::make_shared<DSPUtils<Complex>>();
+    auto                               max_amplitude = dsp_utils->normalize(signal);
 
     // apply the Hann window
     dsp_utils->apply_hann_window(signal);

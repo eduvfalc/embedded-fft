@@ -35,13 +35,13 @@ const std::vector<Complex> k_4_bits_reversed{{0, 0},
 class TestBitReversal : public ::testing::Test
 {
 protected:
-    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<DSPUtils<Complex>> dsp_utils = std::make_shared<DSPUtils<Complex>>();
 };
 
 class TestZeroPadding : public ::testing::TestWithParam<int>
 {
 protected:
-    std::shared_ptr<DSPUtils> dsp_utils = std::make_shared<DSPUtils>();
+    std::shared_ptr<DSPUtils<Complex>> dsp_utils = std::make_shared<DSPUtils<Complex>>();
 };
 
 TEST_F(TestBitReversal, Reverse1Bit)

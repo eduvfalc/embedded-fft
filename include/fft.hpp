@@ -17,17 +17,17 @@ class FFT
 {
 public:
     FFT() = delete;
-    explicit FFT(std::shared_ptr<DSPUtils> dsp_utils)
+    explicit FFT(std::shared_ptr<DSPUtils<T, Container>> dsp_utils)
       : m_dsp_utils(dsp_utils){};
 
     void
     compute(Container<T>& signal);
 
 private:
-    std::shared_ptr<DSPUtils> m_dsp_utils = nullptr;
+    std::shared_ptr<DSPUtils<T, Container>> m_dsp_utils = nullptr;
 };
 
-template <typename T, template <class U = T> class Container>
+template <typename T, template <class> class Container>
 void
 FFT<T, Container>::compute(Container<T>& signal)
 {
