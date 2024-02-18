@@ -42,7 +42,7 @@ main()
     dsp_utils->apply_hann_window(signal);
 
     // compute FFT
-    std::shared_ptr<FFT> fft = std::make_shared<FFT>(dsp_utils);
+    std::shared_ptr<FFT<Complex>> fft = std::make_shared<FFT<Complex>>(dsp_utils);
     fft->compute(signal);
 
     // calculate peak
