@@ -23,10 +23,10 @@ main()
     std::chrono::nanoseconds sampling_period
         = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(0.001));
     std::chrono::milliseconds duration(
-        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(1)));
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<double>(3)));
 
     // create signal container
-    etl::vector<Complex, 1024> signal(1024);
+    etl::vector<Complex, 4096> signal(4096);
 
     // create signal generator
     std::shared_ptr<SignalGenerator<Complex, etl::ivector>> generator
