@@ -29,20 +29,21 @@ main()
     etl::vector<Complex, 1024> signal(1024);
 
     // create signal generator
-    std::shared_ptr<SignalGenerator> generator = std::make_shared<SignalGenerator>(duration, sampling_period);
+    std::shared_ptr<SignalGenerator<Complex, etl::ivector>> generator
+        = std::make_shared<SignalGenerator<Complex, etl::ivector>>(duration, sampling_period);
 
     // generate sine function
     generator->generate_sine_wave(signal, parameters);
 
     // normalize
-    std::shared_ptr<DSPUtils<Complex>> dsp_utils     = std::make_shared<DSPUtils<Complex>>();
-    auto                               max_amplitude = dsp_utils->normalize(signal);
+    std::shared_ptr<DSPUtils<Complex, etl::ivector>> dsp_utils = std::make_shared<DSPUtils<Complex, etl::ivector>>();
+    auto                                             max_amplitude = dsp_utils->normalize(signal);
 
     // apply the Hann window
     dsp_utils->apply_hann_window(signal);
 
     // compute FFT
-    std::shared_ptr<FFT<Complex>> fft = std::make_shared<FFT<Complex>>(dsp_utils);
+    std::shared_ptr<FFT<Complex, etl::ivector>> fft = std::make_shared<FFT<Complex, etl::ivector>>(dsp_utils);
     fft->compute(signal);
 
     // calculate peak

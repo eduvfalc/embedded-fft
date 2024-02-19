@@ -32,89 +32,50 @@ const std::vector<Complex> k_4_bits_reversed{{0, 0},
                                              {7, 0},
                                              {15, 0}};
 
-class TestBitReversal : public ::testing::Test
+class TestBitReversal : public ::testing::TestWithParam<std::vector<Complex>>
 {
 protected:
-    std::shared_ptr<DSPUtils<Complex>> dsp_utils = std::make_shared<DSPUtils<Complex>>();
+    std::shared_ptr<DSPUtils<Complex, std::vector>> dsp_utils = std::make_shared<DSPUtils<Complex, std::vector>>();
 };
 
-class TestZeroPadding : public ::testing::TestWithParam<int>
+class TestZeroPadding : public ::testing::TestWithParam<std::pair<int, int>>
 {
 protected:
-    std::shared_ptr<DSPUtils<Complex>> dsp_utils = std::make_shared<DSPUtils<Complex>>();
+    std::shared_ptr<DSPUtils<Complex, std::vector>> dsp_utils = std::make_shared<DSPUtils<Complex, std::vector>>();
 };
 
-TEST_F(TestBitReversal, Reverse1Bit)
+TEST_P(TestBitReversal, BitsAreReversed)
 {
-    const auto              input_signal = k_1_bit_reversed;
-    const auto              signal_size  = input_signal.size();
-    etl::vector<Complex, 2> test_signal(2);
+    const auto           input_signal = GetParam();
+    const auto           signal_size  = input_signal.size();
+    std::vector<Complex> test_signal;
     for (int i = 0; i <= signal_size - 1; ++i)
-        test_signal[i] = Complex(i, 0);
+        test_signal.emplace_back(Complex(i, 0));
 
     dsp_utils->bit_reversal(test_signal);
 
-    for (int i = 0; i <= signal_size - 1; ++i) {
-        EXPECT_EQ(test_signal[i], input_signal[i]);
-    }
+    EXPECT_EQ(test_signal, input_signal);
 }
 
-TEST_F(TestBitReversal, Reverse2Bits)
+TEST_P(TestZeroPadding, SignalsArePowersOf2)
 {
-    const auto              input_signal = k_2_bits_reversed;
-    const auto              signal_size  = input_signal.size();
-    etl::vector<Complex, 4> test_signal(4);
-    for (int i = 0; i <= signal_size - 1; ++i)
-        test_signal[i] = Complex(i, 0);
-
-    dsp_utils->bit_reversal(test_signal);
-
-    for (int i = 0; i <= signal_size - 1; ++i) {
-        EXPECT_EQ(test_signal[i], input_signal[i]);
-    }
-}
-
-TEST_F(TestBitReversal, Reverse3Bits)
-{
-    const auto              input_signal = k_3_bits_reversed;
-    const auto              signal_size  = input_signal.size();
-    etl::vector<Complex, 8> test_signal(8);
-    for (int i = 0; i <= signal_size - 1; ++i)
-        test_signal[i] = Complex(i, 0);
-
-    dsp_utils->bit_reversal(test_signal);
-
-    for (int i = 0; i <= signal_size - 1; ++i) {
-        EXPECT_EQ(test_signal[i], input_signal[i]);
-    }
-}
-
-TEST_F(TestBitReversal, Reverse4Bits)
-{
-    const auto               input_signal = k_4_bits_reversed;
-    const auto               signal_size  = input_signal.size();
-    etl::vector<Complex, 16> test_signal(16);
-    for (int i = 0; i <= signal_size - 1; ++i)
-        test_signal[i] = Complex(i, 0);
-
-    dsp_utils->bit_reversal(test_signal);
-
-    for (int i = 0; i <= signal_size - 1; ++i) {
-        EXPECT_EQ(test_signal[i], input_signal[i]);
-    }
-}
-
-/* TEST_P(TestZeroPadding, SignalsArePowersOf2)
-{
-    const auto                        signal_size = GetParam();
-    etl::vector<Complex, signal_size> test_signal(signal_size);
+    const int            signal_size = GetParam().first;
+    std::vector<Complex> test_signal(signal_size);
     for (int i = 0; i <= signal_size; ++i)
         test_signal[i] = Complex(i, 0);
-    const auto next_pow_2 = test_signal.capacity();
+    const auto next_pow_2 = GetParam().second;
 
     dsp_utils->zero_padding(test_signal);
 
     EXPECT_EQ(test_signal.size(), next_pow_2);
 }
 
-INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2, TestZeroPadding, ::testing::Values(3, 5, 12, 100)); */
+INSTANTIATE_TEST_CASE_P(BitReversal,
+                        TestBitReversal,
+                        ::testing::Values(k_1_bit_reversed, k_2_bits_reversed, k_3_bits_reversed, k_4_bits_reversed));
+
+
+INSTANTIATE_TEST_CASE_P(
+    SignalsArePowersOf2,
+    TestZeroPadding,
+    ::testing::Values(std::make_pair(3, 4), std::make_pair(5, 8), std::make_pair(12, 16), std::make_pair(100, 128)));

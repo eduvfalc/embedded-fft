@@ -11,7 +11,7 @@
 
 namespace fftemb
 {
-template <typename T = Complex, template <class U = T> class Container = etl::ivector>
+template <typename T = Complex, template <class...> class Container = etl::ivector>
 class DSPUtils
 {
 public:
@@ -41,7 +41,7 @@ private:
     double m_max_dc_leakage_frequency_hz = 2;
 };
 
-template <typename T, template <class> class Container>
+template <typename T, template <class...> class Container>
 void
 DSPUtils<T, Container>::bit_reversal(Container<T>& signal)
 {
@@ -61,7 +61,7 @@ DSPUtils<T, Container>::bit_reversal(Container<T>& signal)
     }
 }
 
-template <typename T, template <class> class Container>
+template <typename T, template <class...> class Container>
 void
 DSPUtils<T, Container>::zero_padding(Container<T>& signal)
 {
@@ -76,7 +76,7 @@ DSPUtils<T, Container>::zero_padding(Container<T>& signal)
     }
 }
 
-template <typename T, template <class> class Container>
+template <typename T, template <class...> class Container>
 double
 DSPUtils<T, Container>::normalize(Container<T>& signal)
 {
@@ -90,7 +90,7 @@ DSPUtils<T, Container>::normalize(Container<T>& signal)
     return static_cast<double>(max_amplitude);
 }
 
-template <typename T, template <class> class Container>
+template <typename T, template <class...> class Container>
 std::vector<std::pair<double, double>>
 DSPUtils<T, Container>::find_peaks(Container<T>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
 {
@@ -123,7 +123,7 @@ DSPUtils<T, Container>::find_peaks(Container<T>& signal, std::chrono::nanosecond
     return peak_data;
 }
 
-template <typename T, template <class> class Container>
+template <typename T, template <class...> class Container>
 void
 DSPUtils<T, Container>::apply_hann_window(Container<T>& signal) const
 {
@@ -134,7 +134,6 @@ DSPUtils<T, Container>::apply_hann_window(Container<T>& signal) const
         signal[i]     = signal[i] * hanning_bin * correction_fator;
     }
 }
-
 
 }  // namespace fftemb
 

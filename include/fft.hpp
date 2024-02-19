@@ -12,7 +12,7 @@
 
 namespace fftemb
 {
-template <typename T = Complex, template <class U = T> class Container = etl::ivector>
+template <typename T = Complex, template <class...> class Container = etl::ivector>
 class FFT
 {
 public:
@@ -27,7 +27,7 @@ private:
     std::shared_ptr<DSPUtils<T, Container>> m_dsp_utils = nullptr;
 };
 
-template <typename T, template <class> class Container>
+template <typename T, template <class...> class Container>
 void
 FFT<T, Container>::compute(Container<T>& signal)
 {
