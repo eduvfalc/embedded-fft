@@ -1,3 +1,9 @@
+/**
+ * @file dsp_utils.hpp
+ * @brief Contains the definition of the template class DSPUtils
+ * @date 2024-02-19
+ */
+
 #ifndef H_DSP_UTILS_HPP
 #define H_DSP_UTILS_HPP
 
@@ -11,33 +17,82 @@
 
 namespace fftemb
 {
+
+/**
+ * @brief Helper class for digital signal processing subtasks
+ *
+ * @tparam T The complex number type
+ * @tparam Container The containe type
+ */
 template <typename T = Complex, template <class...> class Container = etl::ivector>
 class DSPUtils
 {
 public:
+    /**
+     * @brief Construct a new DSPUtils object
+     *
+     */
     DSPUtils() = default;
 
+    /**
+     * @brief Construct a new DSPUtils object
+     *
+     * @param max_frequency_delta_pct Minimum percentual frequency difference used to qualify two adjacent peaks as a
+     * different peak
+     * @param min_dc_leakage_frequency_hz Maximum frequency value that defines a DC component and its spectral leakage
+     */
     DSPUtils(double max_frequency_delta_pct, double max_dc_leakage_frequency_hz)
-      : m_max_frequency_delta_pct(max_frequency_delta_pct)
-      , m_max_dc_leakage_frequency_hz(max_dc_leakage_frequency_hz){};
+      : m_min_frequency_delta_pct(max_frequency_delta_pct)
+      , m_max_dc_leakage_frequency_hz(min_dc_leakage_frequency_hz){};
 
+    /**
+     * @brief Apply the bit reversal permutation to the container
+     *
+     * @param sequence The sequence of elements
+     */
     void
-    bit_reversal(Container<T>& signal);
+    bit_reversal(Container<T>& sequence);
 
+    /**
+     * @brief Append zeros to the sequence until the next power of 2, if applicable
+     *
+     * @param sequence The sequence of elements
+     */
     void
-    zero_padding(Container<T>& signal);
+    zero_padding(Container<T>& sequence);
 
+    /**
+     * @brief Find the peaks from the spectrum informed
+     *
+     * @param sequence The sequence of elements
+     * @param sampling_period The sampling period used
+     * @param max_peaks The number of peaks to be searched for
+     * @return A vector of pairs containing peak value and frequency
+     */
     std::vector<std::pair<double, double>>
     find_peaks(Container<T>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
 
+    /**
+     * @brief Normalize a sequence of complex numbers
+     *
+     * @param sequence The sequence of elements
+     * @return The longest norm of the sequence
+     */
     double
-    normalize(Container<T>& signal);
+    normalize(Container<T>& sequence);
 
+    /**
+     * @brief Sequence to mulitply by the Hann window
+     *
+     * @param sequence The sequence of elements
+     */
     void
-    apply_hann_window(Container<T>& signal) const;
+    apply_hann_window(Container<T>& sequence) const;
 
 private:
-    double m_max_frequency_delta_pct     = 0.05;
+    /// @brief Minimum percentual frequency difference used to qualify two adjacent peaks as a different peak
+    double m_min_frequency_delta_pct = 0.05;
+    /// @brief Maximum frequency value that defines a DC component and its spectral leakage
     double m_max_dc_leakage_frequency_hz = 2;
 };
 
@@ -107,7 +162,7 @@ DSPUtils<T, Container>::find_peaks(Container<T>& signal, std::chrono::nanosecond
             if (frequency > m_max_dc_leakage_frequency_hz) {
                 auto neighbor_it
                     = std::find_if(peak_data.begin(), peak_data.end(), [frequency, this](const auto& peak) {
-                          return std::abs(1 - frequency / peak.second) < m_max_frequency_delta_pct;
+                          return std::abs(1 - frequency / peak.second) < m_min_frequency_delta_pct;
                       });
                 if (neighbor_it != peak_data.end()) {
                     if (amplitude > neighbor_it->first) {
