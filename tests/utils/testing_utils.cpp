@@ -1,8 +1,14 @@
+/**
+ * @file testing_utils.cpp
+ * @author Eduardo Vieira Falcão
+ * @brief Contains definitions of the fftemb::test_utils namespace members
+ */
+
 #include <algorithm>
 #include <cmath>
 #include <vector>
 
-namespace test_utils
+namespace fftemb::test_utils
 {
 std::vector<std::pair<double, double>>
 calculate_error(const std::vector<std::pair<double, double>>& data,
@@ -23,4 +29,4 @@ sort_pairs(std::vector<std::pair<double, double>>& pairs_vector)
         return a.first > b.first;
     });
 }
-}  // namespace test_utils
+}  // namespace fftemb::test_utils

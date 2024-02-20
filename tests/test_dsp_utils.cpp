@@ -1,3 +1,9 @@
+/**
+ * @file test_dsp_utils.cpp
+ * @author Eduardo Vieira Falcão
+ * @brief Unit tests for the DSPUtils class
+ */
+
 #include <memory>
 #include <numeric>
 #include <vector>

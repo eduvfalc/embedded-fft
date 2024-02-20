@@ -1,10 +1,11 @@
-#include <algorithm>
+/**
+ * @file example.cpp
+ * @author Eduardo Vieira Falcão
+ * @brief Example of FFT calculation
+ */
+
 #include <chrono>
-#include <complex>
 #include <iostream>
-#include <memory>
-#include <utility>
-#include <vector>
 #include "../tests/utils/include/signal_generator.hpp"
 #include "dsp_utils.hpp"
 #include "etl/vector.h"

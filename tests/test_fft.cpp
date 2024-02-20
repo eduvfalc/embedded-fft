@@ -1,3 +1,9 @@
+/**
+ * @file test_fft.cpp
+ * @author Eduardo Vieira Falcão
+ * @brief Unit tests for the FFT class
+ */
+
 #include <chrono>
 #include <functional>
 #include <memory>
