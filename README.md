@@ -6,7 +6,7 @@ Install the Compositional Numeric Library's and Embedded Template Library's head
 
 # Building
 
-For yor convenience, you can build the application using the script `build.sh`. You will need cmake for that.
+For your convenience, you can build the application using the script `build.sh`. You will need cmake for that.
 
 # Testing
 
