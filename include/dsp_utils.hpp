@@ -36,13 +36,13 @@ public:
     /**
      * @brief Construct a new DSPUtils object
      *
-     * @param max_frequency_delta_pct Minimum percentual frequency difference used to qualify two adjacent peaks as a
+     * @param min_frequency_delta_pct Minimum percentual frequency difference used to qualify two adjacent peaks as a
      * different peak
-     * @param min_dc_leakage_frequency_hz Maximum frequency value that defines a DC component and its spectral leakage
+     * @param max_dc_leakage_frequency_hz Maximum frequency value that defines a DC component and its spectral leakage
      */
-    DSPUtils(double max_frequency_delta_pct, double max_dc_leakage_frequency_hz)
-      : m_min_frequency_delta_pct(max_frequency_delta_pct)
-      , m_max_dc_leakage_frequency_hz(min_dc_leakage_frequency_hz){};
+    DSPUtils(double min_frequency_delta_pct, double max_dc_leakage_frequency_hz)
+      : m_min_frequency_delta_pct(min_frequency_delta_pct)
+      , m_max_dc_leakage_frequency_hz(max_dc_leakage_frequency_hz){};
 
     /**
      * @brief Apply the bit reversal permutation to the container
