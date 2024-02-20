@@ -1,6 +1,6 @@
 /**
  * @file testing_utils.hpp
- * @author Eduardo Vieira Falcáo
+ * @author Eduardo Vieira Falcão
  * @brief Declares methods used to assit in the test verifications
  */
 
@@ -8,7 +8,7 @@
 #include <cmath>
 #include <vector>
 
-namespace test_utils
+namespace fftemb::test_utils
 {
 /**
  * @brief Calculate the accuracy error in between the peak values detected and the reference values
@@ -28,4 +28,4 @@ calculate_error(const std::vector<std::pair<double, double>>& data,
  */
 void
 sort_pairs(std::vector<std::pair<double, double>>& pairs_vector);
-}  // namespace test_utils
+}  // namespace fftemb::test_utils
