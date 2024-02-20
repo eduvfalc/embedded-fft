@@ -14,6 +14,11 @@
 
 using namespace fftemb;
 
+/**
+ * @brief The main
+ *
+ * @return 0
+ */
 int
 main()
 {

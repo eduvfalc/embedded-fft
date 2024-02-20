@@ -69,7 +69,7 @@ public:
      * @return A vector of pairs containing peak value and frequency
      */
     std::vector<std::pair<double, double>>
-    find_peaks(Container<T>& signal, std::chrono::nanoseconds sampling_period, int max_peaks);
+    find_peaks(Container<T>& sequence, std::chrono::nanoseconds sampling_period, int max_peaks);
 
     /**
      * @brief Normalize a sequence of complex numbers
@@ -97,12 +97,12 @@ private:
 
 template <typename T, template <class...> class Container>
 void
-DSPUtils<T, Container>::bit_reversal(Container<T>& signal)
+DSPUtils<T, Container>::bit_reversal(Container<T>& sequence)
 {
-    auto n      = signal.size();
-    int  levels = log2(n);
+    auto sequence_size = sequence.size();
+    int  levels        = log2(sequence_size);
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < sequence_size; ++i) {
         int j = 0;
         for (int bit = 0; bit < levels; ++bit) {
             if (i & (1 << bit)) {
@@ -110,35 +110,35 @@ DSPUtils<T, Container>::bit_reversal(Container<T>& signal)
             }
         }
         if (j > i) {
-            std::swap(signal[i], signal[j]);
+            std::swap(sequence[i], sequence[j]);
         }
     }
 }
 
 template <typename T, template <class...> class Container>
 void
-DSPUtils<T, Container>::zero_padding(Container<T>& signal)
+DSPUtils<T, Container>::zero_padding(Container<T>& sequence)
 {
-    int signalSize = signal.size();
-    int nextPow2   = 1;
-    while (nextPow2 < signalSize) {
+    int sequence_size = sequence.size();
+    int nextPow2      = 1;
+    while (nextPow2 < sequence_size) {
         nextPow2 <<= 1;
     }
 
-    if (nextPow2 > signalSize) {
-        signal.resize(nextPow2, {0, 0});
+    if (nextPow2 > sequence_size) {
+        sequence.resize(nextPow2, {0, 0});
     }
 }
 
 template <typename T, template <class...> class Container>
 double
-DSPUtils<T, Container>::normalize(Container<T>& signal)
+DSPUtils<T, Container>::normalize(Container<T>& sequence)
 {
-    auto max_it        = std::max_element(signal.begin(), signal.end(), [](const T& b1, const T& b2) {
+    auto max_it        = std::max_element(sequence.begin(), sequence.end(), [](const T& b1, const T& b2) {
         return std::abs(b1) < std::abs(b2);
     });
     auto max_amplitude = std::abs(*max_it);
-    std::transform(signal.begin(), signal.end(), signal.begin(), [max_amplitude](auto& bin) {
+    std::transform(sequence.begin(), sequence.end(), sequence.begin(), [max_amplitude](auto& bin) {
         return T(cnl::quotient(bin.real(), max_amplitude), cnl::quotient(bin.imag(), max_amplitude));
     });
     return static_cast<double>(max_amplitude);
@@ -146,18 +146,18 @@ DSPUtils<T, Container>::normalize(Container<T>& signal)
 
 template <typename T, template <class...> class Container>
 std::vector<std::pair<double, double>>
-DSPUtils<T, Container>::find_peaks(Container<T>& signal, std::chrono::nanoseconds sampling_period, int max_peaks)
+DSPUtils<T, Container>::find_peaks(Container<T>& sequence, std::chrono::nanoseconds sampling_period, int max_peaks)
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
-    const auto t_s         = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
-    const int  signal_size = signal.size();
-    for (int i = 1; i <= signal_size / 2; ++i) {
-        const auto amplitude = 2 * std::abs(signal[i]) / signal_size;
+    const auto t_s           = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
+    const int  sequence_size = sequence.size();
+    for (int i = 1; i <= sequence_size / 2; ++i) {
+        const auto amplitude = 2 * std::abs(sequence[i]) / sequence_size;
         auto       min_it    = std::min_element(peak_data.begin(), peak_data.end(), [](const auto& a, const auto& b) {
             return a.first < b.first;
         });
         if (min_it != peak_data.end() && amplitude > min_it->first) {
-            const auto frequency = i * 1 / (signal_size * t_s);
+            const auto frequency = i * 1 / (sequence_size * t_s);
             if (frequency > m_max_dc_leakage_frequency_hz) {
                 auto neighbor_it
                     = std::find_if(peak_data.begin(), peak_data.end(), [frequency, this](const auto& peak) {
@@ -179,13 +179,13 @@ DSPUtils<T, Container>::find_peaks(Container<T>& signal, std::chrono::nanosecond
 
 template <typename T, template <class...> class Container>
 void
-DSPUtils<T, Container>::apply_hann_window(Container<T>& signal) const
+DSPUtils<T, Container>::apply_hann_window(Container<T>& sequence) const
 {
     T    correction_fator{2, 0};
-    auto signal_size = signal.size();
-    for (int i = 0; i <= signal_size; ++i) {
-        T hanning_bin = {0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / signal_size), 0};
-        signal[i]     = signal[i] * hanning_bin * correction_fator;
+    auto sequence_size = sequence.size();
+    for (int i = 0; i <= sequence_size; ++i) {
+        T hanning_bin = {0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / sequence_size), 0};
+        sequence[i]   = sequence[i] * hanning_bin * correction_fator;
     }
 }
 
