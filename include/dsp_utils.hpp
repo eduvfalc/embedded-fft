@@ -1,7 +1,7 @@
 /**
  * @file dsp_utils.hpp
+ * @author Eduardo Vieira Falcão
  * @brief Contains the definition of the template class DSPUtils
- * @date 2024-02-19
  */
 
 #ifndef H_DSP_UTILS_HPP
@@ -17,7 +17,6 @@
 
 namespace fftemb
 {
-
 /**
  * @brief Helper class for digital signal processing subtasks
  *
@@ -48,7 +47,7 @@ public:
     /**
      * @brief Apply the bit reversal permutation to the container
      *
-     * @param sequence The sequence of elements
+     * @param[in,out] sequence The sequence of elements
      */
     void
     bit_reversal(Container<T>& sequence);
@@ -56,7 +55,7 @@ public:
     /**
      * @brief Append zeros to the sequence until the next power of 2, if applicable
      *
-     * @param sequence The sequence of elements
+     * @param[in,out] sequence The sequence of elements
      */
     void
     zero_padding(Container<T>& sequence);
@@ -64,7 +63,7 @@ public:
     /**
      * @brief Find the peaks from the spectrum informed
      *
-     * @param sequence The sequence of elements
+     * @param[in,out] sequence The sequence of elements
      * @param sampling_period The sampling period used
      * @param max_peaks The number of peaks to be searched for
      * @return A vector of pairs containing peak value and frequency
@@ -75,7 +74,7 @@ public:
     /**
      * @brief Normalize a sequence of complex numbers
      *
-     * @param sequence The sequence of elements
+     * @param[in,out] sequence The sequence of elements
      * @return The longest norm of the sequence
      */
     double
@@ -84,7 +83,7 @@ public:
     /**
      * @brief Sequence to mulitply by the Hann window
      *
-     * @param sequence The sequence of elements
+     * @param[in,out] sequence The sequence of elements
      */
     void
     apply_hann_window(Container<T>& sequence) const;

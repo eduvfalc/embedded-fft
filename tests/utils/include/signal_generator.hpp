@@ -1,3 +1,9 @@
+/**
+ * @file signal_generator.hpp
+ * @author Eduardo Vieira Falcão
+ * @brief Implements the Signal Generator class
+ */
+
 #ifndef H_SIGNAL_GENERATOR_HPP
 #define H_SIGNAL_GENERATOR_HPP
 
@@ -9,24 +15,50 @@
 
 namespace fftemb
 {
+/**
+ * @brief Contain methods that generate different time-valued signals
+ *
+ * @tparam T The complex number type
+ * @tparam Container The containe type
+ */
 template <typename T = Complex, template <class...> class Container = etl::ivector>
 class SignalGenerator
 {
 public:
-    SignalGenerator() = default;
+    SignalGenerator() = delete;
 
+    /**
+     * @brief Construct a new Signal Generator object
+     *
+     * @param duration The duration of the signal
+     * @param sampling_period The sampling period of the signal
+     */
     SignalGenerator(std::chrono::nanoseconds duration, std::chrono::nanoseconds sampling_period)
       : m_duration(duration)
       , m_sampling_period(sampling_period){};
 
+    /**
+     * @brief Generate a sine wave
+     *
+     * @param[in,out] signal The signal
+     * @param parameters The pairs of [amplitude, frequency]
+     */
     void
     generate_sine_wave(Container<T>& signal, const std::vector<std::pair<double, double>>& parameters) const;
 
+    /**
+     * @brief Generate a square wave
+     *
+     * @param signal The signal
+     * @param frequency The square wave frequency
+     */
     void
     generate_square_wave(Container<T>& signal, double frequency) const;
 
 private:
+    /// @brief The duration of the signals generated
     std::chrono::nanoseconds m_duration;
+    /// @brief The sampling period of the signal
     std::chrono::nanoseconds m_sampling_period;
 };
 

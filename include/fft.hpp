@@ -1,3 +1,9 @@
+/**
+ * @file fft.hpp
+ * @author Eduardo Vieira Falcão
+ * @brief Contains the definition of the FFT class
+ */
+
 #ifndef H_FFT_HPP
 #define H_FFT_HPP
 
@@ -12,18 +18,36 @@
 
 namespace fftemb
 {
+/**
+ * @brief Implements the in-place Cooley-Tukey's Fast Fourier Transform algorithm
+ *
+ * @tparam T The complex number type
+ * @tparam Container The container type
+ */
 template <typename T = Complex, template <class...> class Container = etl::ivector>
 class FFT
 {
 public:
     FFT() = delete;
+
+    /**
+     * @brief Construct a new FFT object
+     *
+     * @param dsp_utils The DSPUtils instance
+     */
     explicit FFT(std::shared_ptr<DSPUtils<T, Container>> dsp_utils)
       : m_dsp_utils(dsp_utils){};
 
+    /**
+     * @brief Computes the FFT transform and stores the result in the
+     *
+     * @param[in,out] signal The signal to be transformed. Output overwrites signal.
+     */
     void
     compute(Container<T>& signal);
 
 private:
+    /// @brief  The DSPUtils instance
     std::shared_ptr<DSPUtils<T, Container>> m_dsp_utils = nullptr;
 };
 
