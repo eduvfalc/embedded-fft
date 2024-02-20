@@ -1,2 +1,6 @@
 # build output
 /build
+
+# doxygen output
+/html
+/latex

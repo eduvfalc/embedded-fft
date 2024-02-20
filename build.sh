@@ -7,3 +7,5 @@ BUILD_DIR=$BUILD_DIR
 
 cmake -S ${SOURCE_DIR} -B ${BUILD_DIR}
 cmake --build ${BUILD_DIR}
+
+doxygen Doxyfile.conf
