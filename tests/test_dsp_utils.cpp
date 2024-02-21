@@ -81,7 +81,9 @@ INSTANTIATE_TEST_CASE_P(BitReversal,
                         ::testing::Values(k_1_bit_reversed, k_2_bits_reversed, k_3_bits_reversed, k_4_bits_reversed));
 
 
-INSTANTIATE_TEST_CASE_P(
-    SignalsArePowersOf2,
-    TestZeroPadding,
-    ::testing::Values(std::make_pair(3, 4), std::make_pair(5, 8), std::make_pair(12, 16), std::make_pair(100, 128)));
+INSTANTIATE_TEST_CASE_P(SignalsArePowersOf2,
+                        TestZeroPadding,
+                        ::testing::Values(std::make_pair(5, 8),
+                                          std::make_pair(12, 16),
+                                          std::make_pair(100, 128),
+                                          std::make_pair(600, 1024)));
