@@ -55,13 +55,15 @@ template <typename T, template <class...> class Container>
 void
 FFT<T, Container>::compute(Container<T>& signal)
 {
-    m_dsp_utils->zero_padding(signal);
+    if (!cnl::ispow2(signal.size())) {
+        m_dsp_utils->zero_padding(signal);
+    }
     m_dsp_utils->bit_reversal(signal);
 
     int n = signal.size();
     for (uint32_t len = 2; len <= n; len <<= 1) {
-        double angle = 2 * std::numbers::pi / len;
-        T      wlen(std::cos(angle), std::sin(angle));
+        auto angle = 2 * std::numbers::pi / len;
+        T    wlen(std::cos(angle), std::sin(angle));
 
         for (uint32_t i = 0; i < n; i += len) {
             T w(1);
