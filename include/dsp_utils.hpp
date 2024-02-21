@@ -77,7 +77,7 @@ public:
      * @param[in,out] sequence The sequence of elements
      * @return The longest norm of the sequence
      */
-    double
+    auto
     normalize(Container<T>& sequence);
 
     /**
@@ -131,17 +131,19 @@ DSPUtils<T, Container>::zero_padding(Container<T>& sequence)
 }
 
 template <typename T, template <class...> class Container>
-double
+auto
 DSPUtils<T, Container>::normalize(Container<T>& sequence)
 {
-    auto max_it        = std::max_element(sequence.begin(), sequence.end(), [](const T& b1, const T& b2) {
-        return std::abs(b1) < std::abs(b2);
+    auto max_it        = std::max_element(sequence.begin(), sequence.end(), [](const T& a, const T& b) {
+        auto _a = cnl::sqrt(a.real() * a.real() + a.imag() * a.imag());
+        auto _b = cnl::sqrt(b.real() * b.real() + b.imag() * b.imag());
+        return _a < _b;
     });
-    auto max_amplitude = std::abs(*max_it);
+    auto max_amplitude = cnl::sqrt(max_it->real() * max_it->real() + max_it->imag() * max_it->imag());
     std::transform(sequence.begin(), sequence.end(), sequence.begin(), [max_amplitude](auto& bin) {
         return T(cnl::quotient(bin.real(), max_amplitude), cnl::quotient(bin.imag(), max_amplitude));
     });
-    return static_cast<double>(max_amplitude);
+    return max_amplitude;
 }
 
 template <typename T, template <class...> class Container>
