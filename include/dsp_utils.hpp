@@ -50,7 +50,7 @@ public:
      * @param[in,out] sequence The sequence of elements
      */
     void
-    bit_reversal(Container<T>& sequence);
+    bit_reversal(Container<T>& sequence) const;
 
     /**
      * @brief Append zeros to the sequence until the next power of 2, if applicable
@@ -58,7 +58,7 @@ public:
      * @param[in,out] sequence The sequence of elements
      */
     void
-    zero_padding(Container<T>& sequence);
+    zero_padding(Container<T>& sequence) const;
 
     /**
      * @brief Find the peaks from the spectrum informed
@@ -69,7 +69,7 @@ public:
      * @return A vector of pairs containing peak value and frequency
      */
     std::vector<std::pair<double, double>>
-    find_peaks(Container<T>& sequence, std::chrono::nanoseconds sampling_period, int max_peaks);
+    find_peaks(Container<T>& sequence, std::chrono::nanoseconds sampling_period, int max_peaks) const;
 
     /**
      * @brief Normalize a sequence of complex numbers
@@ -78,7 +78,7 @@ public:
      * @return The longest norm of the sequence
      */
     auto
-    normalize(Container<T>& sequence);
+    normalize(Container<T>& sequence) const;
 
     /**
      * @brief Sequence to mulitply by the Hann window
@@ -87,6 +87,15 @@ public:
      */
     void
     apply_hann_window(Container<T>& sequence) const;
+
+    /**
+     * @brief Calculates the norm of a complex number using CNL's sqrt
+     *
+     * @param complex The complex number
+     * @return The norm
+     */
+    auto
+    abs(T complex) const;
 
 private:
     /// @brief Minimum percentual frequency difference used to qualify two adjacent peaks as a different peak
@@ -97,7 +106,7 @@ private:
 
 template <typename T, template <class...> class Container>
 void
-DSPUtils<T, Container>::bit_reversal(Container<T>& sequence)
+DSPUtils<T, Container>::bit_reversal(Container<T>& sequence) const
 {
     auto sequence_size = sequence.size();
     auto levels        = cnl::log2p1(sequence_size) - 1;
@@ -117,7 +126,7 @@ DSPUtils<T, Container>::bit_reversal(Container<T>& sequence)
 
 template <typename T, template <class...> class Container>
 void
-DSPUtils<T, Container>::zero_padding(Container<T>& sequence)
+DSPUtils<T, Container>::zero_padding(Container<T>& sequence) const
 {
     int sequence_size = sequence.size();
     int nextPow2      = 1;
@@ -132,12 +141,10 @@ DSPUtils<T, Container>::zero_padding(Container<T>& sequence)
 
 template <typename T, template <class...> class Container>
 auto
-DSPUtils<T, Container>::normalize(Container<T>& sequence)
+DSPUtils<T, Container>::normalize(Container<T>& sequence) const
 {
-    auto max_it        = std::max_element(sequence.begin(), sequence.end(), [](const T& a, const T& b) {
-        auto _a = cnl::sqrt(a.real() * a.real() + a.imag() * a.imag());
-        auto _b = cnl::sqrt(b.real() * b.real() + b.imag() * b.imag());
-        return _a < _b;
+    auto max_it        = std::max_element(sequence.begin(), sequence.end(), [this](const T& a, const T& b) {
+        return abs(a) < abs(b);
     });
     auto max_amplitude = cnl::sqrt(max_it->real() * max_it->real() + max_it->imag() * max_it->imag());
     std::transform(sequence.begin(), sequence.end(), sequence.begin(), [max_amplitude](auto& bin) {
@@ -148,7 +155,9 @@ DSPUtils<T, Container>::normalize(Container<T>& sequence)
 
 template <typename T, template <class...> class Container>
 std::vector<std::pair<double, double>>
-DSPUtils<T, Container>::find_peaks(Container<T>& sequence, std::chrono::nanoseconds sampling_period, int max_peaks)
+DSPUtils<T, Container>::find_peaks(Container<T>&            sequence,
+                                   std::chrono::nanoseconds sampling_period,
+                                   int                      max_peaks) const
 {
     std::vector<std::pair<double, double>> peak_data(max_peaks);
     const auto t_s           = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
@@ -189,6 +198,13 @@ DSPUtils<T, Container>::apply_hann_window(Container<T>& sequence) const
         T hanning_bin = {0.5 - 0.5 * std::cos(2 * std::numbers::pi * i / sequence_size), 0};
         sequence[i]   = sequence[i] * hanning_bin * correction_fator;
     }
+}
+
+template <typename T, template <class...> class Container>
+auto
+DSPUtils<T, Container>::abs(T complex) const
+{
+    return cnl::sqrt(complex.real() * complex.real() + complex.imag() * complex.imag());
 }
 
 }  // namespace fftemb
