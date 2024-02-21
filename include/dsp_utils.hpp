@@ -100,7 +100,7 @@ void
 DSPUtils<T, Container>::bit_reversal(Container<T>& sequence)
 {
     auto sequence_size = sequence.size();
-    int  levels        = log2(sequence_size);
+    auto levels        = cnl::log2p1(sequence_size) - 1;
 
     for (int i = 0; i < sequence_size; ++i) {
         int j = 0;
