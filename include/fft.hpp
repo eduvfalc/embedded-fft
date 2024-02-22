@@ -19,9 +19,9 @@
 namespace fftemb
 {
 /**
- * @brief Computes the FFT transform and stores the result in the
+ * @brief Computes the in-place FFT transform
  *
- * @param[in,out] signal The signal to be transformed. Output overwrites signal.
+ * @param[in,out] signal The signal to be transformed
  */
 template <typename T = Complex, template <class...> class Container = etl::ivector>
 void
