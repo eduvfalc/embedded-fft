@@ -5,8 +5,10 @@
  */
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <vector>
+#include "fft_types.hpp"
 
 namespace fftemb::test_utils
 {

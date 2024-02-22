@@ -70,7 +70,7 @@ TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
 
     fft->compute(test_signal);
 
-    auto peak_data = dsp_utils->find_peaks(test_signal, k_sampling_period, signal_parameters.size());
+    auto peak_data = test_utils::find_peaks(test_signal, k_sampling_period, signal_parameters.size());
     for (auto& peak : peak_data) {
         peak.first *= max_peak;
     }
@@ -99,7 +99,7 @@ TEST_P(TestSquareFFT, SquareWaveSpectrumWithinTolerance)
 
     fft->compute(test_signal);
 
-    auto peak_data = dsp_utils->find_peaks(test_signal, k_sampling_period, num_peaks);
+    auto peak_data = test_utils::find_peaks(test_signal, k_sampling_period, num_peaks);
     for (auto& peak : peak_data) {
         peak.first *= max_peak;
     }

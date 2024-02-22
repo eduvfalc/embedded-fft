@@ -61,17 +61,6 @@ public:
     zero_padding(Container<T>& sequence) const;
 
     /**
-     * @brief Find the peaks from the spectrum informed
-     *
-     * @param[in,out] sequence The sequence of elements
-     * @param sampling_period The sampling period used
-     * @param max_peaks The number of peaks to be searched for
-     * @return A vector of pairs containing peak value and frequency
-     */
-    std::vector<std::pair<double, double>>
-    find_peaks(Container<T>& sequence, std::chrono::nanoseconds sampling_period, int max_peaks) const;
-
-    /**
      * @brief Normalize a sequence of complex numbers
      *
      * @param[in,out] sequence The sequence of elements
@@ -151,41 +140,6 @@ DSPUtils<T, Container>::normalize(Container<T>& sequence) const
         return T(cnl::quotient(bin.real(), max_amplitude), cnl::quotient(bin.imag(), max_amplitude));
     });
     return max_amplitude;
-}
-
-template <typename T, template <class...> class Container>
-std::vector<std::pair<double, double>>
-DSPUtils<T, Container>::find_peaks(Container<T>&            sequence,
-                                   std::chrono::nanoseconds sampling_period,
-                                   int                      max_peaks) const
-{
-    std::vector<std::pair<double, double>> peak_data(max_peaks);
-    const auto t_s           = std::chrono::duration_cast<std::chrono::duration<double>>(sampling_period).count();
-    const int  sequence_size = sequence.size();
-    for (int i = 1; i <= sequence_size / 2; ++i) {
-        const auto amplitude = 2 * std::abs(sequence[i]) / sequence_size;
-        auto       min_it    = std::min_element(peak_data.begin(), peak_data.end(), [](const auto& a, const auto& b) {
-            return a.first < b.first;
-        });
-        if (min_it != peak_data.end() && amplitude > min_it->first) {
-            const auto frequency = i * 1 / (sequence_size * t_s);
-            if (frequency > m_max_dc_leakage_frequency_hz) {
-                auto neighbor_it
-                    = std::find_if(peak_data.begin(), peak_data.end(), [frequency, this](const auto& peak) {
-                          return std::abs(1 - frequency / peak.second) < m_min_frequency_delta_pct;
-                      });
-                if (neighbor_it != peak_data.end()) {
-                    if (amplitude > neighbor_it->first) {
-                        *neighbor_it = {static_cast<double>(amplitude), frequency};
-                    }
-                }
-                else {
-                    *min_it = {static_cast<double>(amplitude), frequency};
-                }
-            }
-        }
-    }
-    return peak_data;
 }
 
 template <typename T, template <class...> class Container>

@@ -7,6 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include "../tests/utils/include/signal_generator.hpp"
+#include "../tests/utils/include/testing_utils.hpp"
 #include "dsp_utils.hpp"
 #include "etl/vector.h"
 #include "fft.hpp"
@@ -53,7 +54,7 @@ main()
     fft->compute(signal);
 
     // calculate peak
-    auto peak_data = dsp_utils->find_peaks(signal, sampling_period, parameters.size());
+    auto peak_data = test_utils::find_peaks(signal, sampling_period, parameters.size());
     std::cout << "Peak: " << peak_data[0].first * max_amplitude << std::endl
               << "Peak freq: " << peak_data[0].second << std::endl;
 
