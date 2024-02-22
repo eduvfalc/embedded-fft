@@ -21,7 +21,6 @@ target_link_libraries(${PROJECT_NAME}_test
     PRIVATE
     ${PROJECT_NAME}_lib
     GTest::gtest
-    GTest::gmock
     GTest::gtest_main
 )
 
