@@ -10,4 +10,4 @@ For your convenience, you can build the application using the script `build.sh`.
 
 # Testing
 
-You can run the tests by executing the script `test.sh`. You will need googletest for that
+You can run the tests by executing the script `test.sh`. You will need googletest for that.
