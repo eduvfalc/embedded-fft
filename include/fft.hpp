@@ -19,46 +19,18 @@
 namespace fftemb
 {
 /**
- * @brief Implements the in-place Cooley-Tukey's Fast Fourier Transform algorithm
+ * @brief Computes the FFT transform and stores the result in the
  *
- * @tparam T The complex number type
- * @tparam Container The container type
+ * @param[in,out] signal The signal to be transformed. Output overwrites signal.
  */
 template <typename T = Complex, template <class...> class Container = etl::ivector>
-class FFT
-{
-public:
-    FFT() = delete;
-
-    /**
-     * @brief Construct a new FFT object
-     *
-     * @param dsp_utils The DSPUtils instance
-     */
-    explicit FFT(std::shared_ptr<DSPUtils<T, Container>> dsp_utils)
-      : m_dsp_utils(dsp_utils){};
-
-    /**
-     * @brief Computes the FFT transform and stores the result in the
-     *
-     * @param[in,out] signal The signal to be transformed. Output overwrites signal.
-     */
-    void
-    compute(Container<T>& signal);
-
-private:
-    /// @brief  The DSPUtils instance
-    std::shared_ptr<DSPUtils<T, Container>> m_dsp_utils = nullptr;
-};
-
-template <typename T, template <class...> class Container>
 void
-FFT<T, Container>::compute(Container<T>& signal)
+compute(Container<T>& signal)
 {
     if (!cnl::ispow2(signal.size())) {
-        m_dsp_utils->zero_padding(signal);
+        fft_utils::zero_padding(signal);
     }
-    m_dsp_utils->bit_reversal(signal);
+    fft_utils::bit_reversal(signal);
 
     int n = signal.size();
     for (uint32_t len = 2; len <= n; len <<= 1) {

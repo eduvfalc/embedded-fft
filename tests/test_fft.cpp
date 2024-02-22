@@ -46,17 +46,11 @@ class TestSinusoidFFT
   : public ::testing::TestWithParam<
         std::pair<std::function<void(std::vector<Complex>&, const SignalParameters&)>, SignalParameters>>
 {
-protected:
-    std::shared_ptr<DSPUtils<Complex, std::vector>> dsp_utils = std::make_shared<DSPUtils<Complex, std::vector>>();
-    std::shared_ptr<FFT<Complex, std::vector>>      fft       = std::make_shared<FFT<Complex, std::vector>>(dsp_utils);
 };
 
 class TestSquareFFT
   : public ::testing::TestWithParam<std::pair<std::function<void(std::vector<Complex>&, double)>, double>>
 {
-protected:
-    std::shared_ptr<DSPUtils<Complex, std::vector>> dsp_utils = std::make_shared<DSPUtils<Complex, std::vector>>();
-    std::shared_ptr<FFT<Complex, std::vector>>      fft       = std::make_shared<FFT<Complex, std::vector>>(dsp_utils);
 };
 
 TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
@@ -65,10 +59,10 @@ TEST_P(TestSinusoidFFT, SinusoidSpectrumWithinTolerance)
     auto                 test_params       = GetParam();
     auto                 signal_parameters = test_params.second;
     test_params.first(test_signal, signal_parameters);
-    auto max_peak = dsp_utils->normalize(test_signal);
-    dsp_utils->apply_hann_window(test_signal);
+    auto max_peak = fft_utils::normalize(test_signal);
+    fft_utils::apply_hann_window(test_signal);
 
-    fft->compute(test_signal);
+    compute(test_signal);
 
     auto peak_data = test_utils::find_peaks(test_signal, k_sampling_period, signal_parameters.size());
     for (auto& peak : peak_data) {
@@ -90,14 +84,14 @@ TEST_P(TestSquareFFT, SquareWaveSpectrumWithinTolerance)
     std::vector<std::pair<double, double>> signal_parameters;
     auto                                   frequency = test_params.second;
     test_params.first(test_signal, frequency);
-    auto max_peak = dsp_utils->normalize(test_signal);
-    dsp_utils->apply_hann_window(test_signal);
+    auto max_peak = fft_utils::normalize(test_signal);
+    fft_utils::apply_hann_window(test_signal);
     auto num_peaks = 3;
     for (int i = 1; i <= num_peaks * 2; i += 2) {
         signal_parameters.emplace_back(std::make_pair(4 / (i * std::numbers::pi), i * frequency));
     }
 
-    fft->compute(test_signal);
+    compute(test_signal);
 
     auto peak_data = test_utils::find_peaks(test_signal, k_sampling_period, num_peaks);
     for (auto& peak : peak_data) {

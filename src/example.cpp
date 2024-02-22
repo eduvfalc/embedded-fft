@@ -43,15 +43,13 @@ main()
     generator->generate_sine_wave(signal, parameters);
 
     // normalize
-    std::shared_ptr<DSPUtils<Complex, etl::ivector>> dsp_utils = std::make_shared<DSPUtils<Complex, etl::ivector>>();
-    auto                                             max_amplitude = dsp_utils->normalize(signal);
+    auto max_amplitude = fft_utils::normalize(signal);
 
     // apply the Hann window
-    dsp_utils->apply_hann_window(signal);
+    fft_utils::apply_hann_window(signal);
 
     // compute FFT
-    std::shared_ptr<FFT<Complex, etl::ivector>> fft = std::make_shared<FFT<Complex, etl::ivector>>(dsp_utils);
-    fft->compute(signal);
+    compute(signal);
 
     // calculate peak
     auto peak_data = test_utils::find_peaks(signal, sampling_period, parameters.size());
