@@ -1,4 +1,4 @@
-# FFT for Embedded Systems
+# Fixed-Point FFT
 An implementation of the FFT Cooley-Tukey algorithm using the [Compositional Numeric Library](https://github.com/johnmcfarlane/cnl)'s fixed-point representation and the [Embedded Template Library](https://github.com/ETLCPP/etl)'s `vector`.
 
 # Pre-requisites
